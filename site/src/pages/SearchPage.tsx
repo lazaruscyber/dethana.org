@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { ftsSearch, type FtsBook, type FtsLine } from '../api/search'
+import { interpolate, useUi } from '../i18n'
 import type { PageConfig } from '../types'
 import '../ui/content.css'
 
 export function SearchPage({ config }: { config: PageConfig }) {
+  const { t } = useUi()
   const q = config.query || new URLSearchParams(window.location.search).get('q') || ''
   const [books, setBooks] = useState<FtsBook[]>([])
   const [results, setResults] = useState<FtsLine[]>([])
@@ -20,9 +22,9 @@ export function SearchPage({ config }: { config: PageConfig }) {
 
   return (
     <>
-      <h1>Search</h1>
-      <p>{q ? `Results for “${q}”` : 'Enter a query in the header search.'}</p>
-      {q && <p>{total} matching paragraphs in {books.length} books</p>}
+      <h1>{t.search}</h1>
+      <p>{q ? interpolate(t.searchResults, { q }) : t.searchHint}</p>
+      {q && <p>{interpolate(t.searchSummary, { total, books: books.length })}</p>}
       <div className="searchList">
         {results.map((r, i) => (
           <a
@@ -37,7 +39,7 @@ export function SearchPage({ config }: { config: PageConfig }) {
         {!results.length && books.map(b => (
           <a key={b.book_id} className="searchHit" href={`${config.baseUrl}/${config.lang}/book/${b.book_id}`}>
             <b>{b.book_name || b.book_id}</b>
-            <p>{b.count} matches</p>
+            <p>{interpolate(t.matches, { n: b.count })}</p>
           </a>
         ))}
       </div>

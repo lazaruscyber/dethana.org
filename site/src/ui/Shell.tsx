@@ -1,9 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
+import { SiteLanguageField } from './SiteLanguageField'
 import { fetchMenu } from '../api/menu'
 import { applyTheme } from './theme'
 import { initCookieConsent } from '../cookie-consent.js'
+import { useUi } from '../i18n'
 import type { LangInfo, MenuTree, TocItem } from '../types'
 import styles from './Shell.module.css'
 
@@ -31,6 +33,7 @@ export function Shell({
   baseUrl, lang, langs, bookId, title, subtitle, toc, activePara, sidebarMode,
   bookmarked, showClose, showSearch, hideFooter, fullBleed, onSettings, onBookmark, children,
 }: Props) {
+  const { t } = useUi()
   const [menu, setMenu] = useState<MenuTree>({})
   const [navOpen, setNavOpen] = useState(false)
   const [panel, setPanel] = useState(false)
@@ -45,7 +48,7 @@ export function Shell({
 
   return (
     <div className={`${styles.layout} ${fullBleed ? styles.fullBleed : ''}`}>
-      <a className="skip-link" href="#main-content">Skip to content</a>
+      <a className="skip-link" href="#main-content">{t.skipToContent}</a>
       <Header
         baseUrl={baseUrl}
         lang={lang}
@@ -71,15 +74,15 @@ export function Shell({
           bookId={bookId}
           activePara={activePara}
         />
-        {navOpen && <button className={styles.backdrop} aria-label="Close menu" onClick={() => setNavOpen(false)} />}
+        {navOpen && <button className={styles.backdrop} aria-label={t.close} onClick={() => setNavOpen(false)} />}
         <main id="main-content" className={styles.main}>
           {children}
           {!hideFooter && (
             <div className={styles.footer}>
-              <a href={`${baseUrl}/about`}>About</a>
-              <a href={`${baseUrl}/translation-policy`}>Translation Policy</a>
-              <a href={`${baseUrl}/dana`}>Dana</a>
-              <a href={`${baseUrl}/privacy`}>Privacy</a>
+              <a href={`${baseUrl}/about`}>{t.about}</a>
+              <a href={`${baseUrl}/translation-policy`}>{t.translationPolicy}</a>
+              <a href={`${baseUrl}/dana`}>{t.dana}</a>
+              <a href={`${baseUrl}/privacy`}>{t.privacy}</a>
               <span>Dethana</span>
             </div>
           )}
@@ -88,10 +91,11 @@ export function Shell({
       {panel && (
         <div className={styles.modal} role="dialog" aria-modal="true" onClick={() => setPanel(false)}>
           <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
-            <h2>Text settings</h2>
+            <h2>{t.textSettings}</h2>
+            <SiteLanguageField />
             {langs.length > 0 && (
               <div className={styles.field}>
-                Translation
+                {t.scriptureTranslation}
                 <div className={styles.langs}>
                   {langs.map(l => (
                     <a
@@ -105,7 +109,7 @@ export function Shell({
                 </div>
               </div>
             )}
-            <button className={styles.close} type="button" onClick={() => setPanel(false)}>Close</button>
+            <button className={styles.close} type="button" onClick={() => setPanel(false)}>{t.close}</button>
           </div>
         </div>
       )}

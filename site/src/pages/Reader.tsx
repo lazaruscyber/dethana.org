@@ -5,6 +5,8 @@ import { TextProcessor, Script } from '../pali-script.js'
 import { fetchBook, fetchSection, slugForHeading } from '../api/menu'
 import { BASE_URL } from '../routes'
 import { applySeo, SITE_ORIGIN } from '../seo'
+import { interpolate, useUi } from '../i18n'
+import { SiteLanguageField } from '../ui/SiteLanguageField'
 import type { BookFile, LangInfo, SectionData, TocItem } from '../types'
 import styles from '../ui/Reader.module.css'
 import '../ui/content.css'
@@ -90,6 +92,7 @@ function buildArticle(book: BookFile, lang: string) {
 }
 
 export function Reader({ lang, bookId, paraId, langs }: Props) {
+  const { t } = useUi()
   const host = useRef<HTMLDivElement>(null)
   const original = useRef(new WeakMap<Element, string>())
   const bookRef = useRef<BookFile | null>(null)
@@ -159,11 +162,11 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
       })
       .catch(() => {
         if (cancelled) return
-        setError('This book is not in the static export yet.')
+        setError(t.bookMissing)
         setLoading(false)
       })
     return () => { cancelled = true }
-  }, [bookId])
+  }, [bookId, t.bookMissing])
 
   useEffect(() => {
     const root = host.current
@@ -303,11 +306,11 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
     >
       {banner && (
         <div className={styles.banner}>
-          <span>Want to change the translation?</span>
+          <span>{t.changeTranslation}</span>
           <button className={styles.bannerBtn} type="button" onClick={() => setLangOpen(v => !v)}>
-            Go to translations
+            {t.goToTranslations}
           </button>
-          <button className={styles.bannerX} type="button" aria-label="Dismiss" onClick={dismissBanner}>×</button>
+          <button className={styles.bannerX} type="button" aria-label={t.dismiss} onClick={dismissBanner}>×</button>
         </div>
       )}
       {langOpen && (
@@ -326,7 +329,7 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
 
       <div className={styles.folio}>
         <h1 className={styles.folioTitle}>{book?.book_name || bookId}</h1>
-        <p className={styles.folioMark}>{section?.title || (loading ? 'Loading…' : bookId)}</p>
+        <p className={styles.folioMark}>{section?.title || (loading ? t.loading : bookId)}</p>
       </div>
       {error && <p className={styles.folioMark}>{error}</p>}
       <div className={styles.article} ref={host} />
@@ -334,38 +337,39 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
       {settingsOpen && (
         <div className={styles.modal} role="dialog" aria-modal="true" onClick={() => setSettingsOpen(false)}>
           <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
-            <h2>Text settings</h2>
+            <h2>{t.textSettings}</h2>
+            <SiteLanguageField />
             <label className={styles.field}>
-              Pāli script
+              {t.paliScript}
               <select value={settings.paliScript} onChange={e => setSettings({ ...settings, paliScript: e.target.value, scriptManuallySet: true })}>
-                <option value={Script.MY}>Burmese (Myanmar)</option>
-                <option value={Script.RO}>Roman</option>
-                <option value={Script.SI}>Sinhala</option>
-                <option value={Script.HI}>Devanagari</option>
-                <option value={Script.THAI}>Thai</option>
+                <option value={Script.MY}>{t.scriptBurmese}</option>
+                <option value={Script.RO}>{t.scriptRoman}</option>
+                <option value={Script.SI}>{t.scriptSinhala}</option>
+                <option value={Script.HI}>{t.scriptDevanagari}</option>
+                <option value={Script.THAI}>{t.scriptThai}</option>
               </select>
             </label>
             <label className={styles.field}>
-              Layout
+              {t.layout}
               <select value={settings.layout} onChange={e => setSettings({ ...settings, layout: e.target.value })}>
-                <option value="stacked">Stacked</option>
-                <option value="sidebyside">Side by side</option>
+                <option value="stacked">{t.stacked}</option>
+                <option value="sidebyside">{t.sideBySide}</option>
               </select>
             </label>
             <label className={styles.field}>
-              Font size ({settings.fontSize}px)
+              {interpolate(t.fontSize, { n: settings.fontSize })}
               <input type="range" min={16} max={32} value={settings.fontSize}
                 onChange={e => setSettings({ ...settings, fontSize: Number(e.target.value) })} />
             </label>
             <label className={styles.field}>
-              <span><input type="checkbox" checked={settings.pali} onChange={e => setSettings({ ...settings, pali: e.target.checked })} /> Pāli</span>
+              <span><input type="checkbox" checked={settings.pali} onChange={e => setSettings({ ...settings, pali: e.target.checked })} /> {t.showPali}</span>
             </label>
             <label className={styles.field}>
-              <span><input type="checkbox" checked={settings.translation} onChange={e => setSettings({ ...settings, translation: e.target.checked })} /> Translation</span>
+              <span><input type="checkbox" checked={settings.translation} onChange={e => setSettings({ ...settings, translation: e.target.checked })} /> {t.showTranslation}</span>
             </label>
             <div className={styles.actions}>
-              <button className={styles.btn} type="button" onClick={() => setSettings({ ...defaultSettings(), paliScript: Script.MY, scriptManuallySet: true })}>Reset</button>
-              <button className={`${styles.btn} ${styles.btnPrimary}`} type="button" onClick={save}>Save</button>
+              <button className={styles.btn} type="button" onClick={() => setSettings({ ...defaultSettings(), paliScript: Script.MY, scriptManuallySet: true })}>{t.reset}</button>
+              <button className={`${styles.btn} ${styles.btnPrimary}`} type="button" onClick={save}>{t.save}</button>
             </div>
           </div>
         </div>

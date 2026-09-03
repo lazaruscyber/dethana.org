@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { COLLECTIONS } from '../api/collections'
 import { SearchBox } from '../ui/SearchBox'
+import { useUi } from '../i18n'
 import type { IndexConfig } from '../types'
 import styles from '../ui/Home.module.css'
 
@@ -18,6 +19,7 @@ const ICONS = [
 ]
 
 export function Home({ config }: { config: IndexConfig }) {
+  const { t } = useUi()
   const [disclaimer, setDisclaimer] = useState(false)
 
   useEffect(() => {
@@ -37,11 +39,11 @@ export function Home({ config }: { config: IndexConfig }) {
               baseUrl={config.baseUrl}
               lang={config.lang}
               size="hero"
-              placeholder="Search the Tipiṭaka"
+              placeholder={t.searchTipitaka}
             />
           </div>
           <div className={styles.popular}>
-            <span>Popular searches</span>
+            <span>{t.popularSearches}</span>
             {POPULAR.map(item => (
               <a key={item.label} href={item.href(config.baseUrl, config.lang)}>{item.label}</a>
             ))}
@@ -59,24 +61,32 @@ export function Home({ config }: { config: IndexConfig }) {
       <section className={styles.body} id="get-started">
         <div className={styles.columns}>
           <div>
-            <h2 className={styles.getStarted}>Get Started</h2>
+            <h2 className={styles.getStarted}>{t.getStarted}</h2>
             <div className={styles.grid}>
-              {COLLECTIONS.map((item, i) => (
+              {COLLECTIONS.map((item, i) => {
+                const copy = {
+                  nikaya: { title: t.colNikayaTitle, desc: t.colNikayaDesc },
+                  abhidhamma: { title: t.colAbhiTitle, desc: t.colAbhiDesc },
+                  vinaya: { title: t.colVinayaTitle, desc: t.colVinayaDesc },
+                  expositions: { title: t.colExpTitle, desc: t.colExpDesc },
+                }[item.id]
+                return (
                 <a key={item.id} className={styles.tile} href={item.href(config.baseUrl, config.lang)} data-icon={i}>
                   <span className={styles.tileIcon}>{ICONS[i]}</span>
                   <span className={styles.tileCopy}>
-                    <span className={styles.tileTitle}>{item.title}</span>
+                    <span className={styles.tileTitle}>{copy?.title || item.title}</span>
                     <span className={styles.tileNote}>{item.note}</span>
-                    <span className={styles.tileDesc}>{item.description}</span>
+                    <span className={styles.tileDesc}>{copy?.desc || item.description}</span>
                   </span>
                 </a>
-              ))}
+                )
+              })}
             </div>
           </div>
           <aside className={styles.help}>
-            <h2>Support This Site</h2>
-            <p>Help with Dana for Dethana's hosting and expenses.</p>
-            <a className={styles.contact} href={`${config.baseUrl}/dana`}>Support with Dana</a>
+            <h2>{t.supportThisSite}</h2>
+            <p>{t.supportBlurb}</p>
+            <a className={styles.contact} href={`${config.baseUrl}/dana`}>{t.supportWithDana}</a>
           </aside>
         </div>
       </section>
@@ -84,12 +94,12 @@ export function Home({ config }: { config: IndexConfig }) {
       {disclaimer && (
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="disc-title">
           <div className={styles.card}>
-            <h2 id="disc-title">Research translations</h2>
-            <p>These are AI-assisted study translations, not a replacement for the original Pāli or an authoritative rendering.</p>
+            <h2 id="disc-title">{t.researchTranslations}</h2>
+            <p>{t.disclaimerBody}</p>
             <button type="button" onClick={() => {
               try { localStorage.setItem('epika_disclaimer_skip', '1') } catch { /* ignore */ }
               setDisclaimer(false)
-            }}>Continue</button>
+            }}>{t.continue}</button>
           </div>
         </div>
       )}

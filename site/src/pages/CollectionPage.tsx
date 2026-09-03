@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchMenu, flattenMenu } from '../api/menu'
 import { collectionById, bookInCollection, type CollectionId } from '../api/collections'
 import { BookCard } from '../ui/BookCard'
+import { interpolate, useUi } from '../i18n'
 import type { BookEntry, PageConfig } from '../types'
 import styles from '../ui/Collection.module.css'
 
@@ -47,6 +48,7 @@ function groupBooks(books: BookEntry[]) {
 }
 
 export function CollectionPage({ config }: { config: PageConfig }) {
+  const { t } = useUi()
   const meta = collectionById(config.collection)
   const [books, setBooks] = useState<BookEntry[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -67,23 +69,38 @@ export function CollectionPage({ config }: { config: PageConfig }) {
   if (!meta) {
     return (
       <div className={styles.page}>
-        <h1>Collection not found</h1>
-        <p><a href={`${config.baseUrl}/${config.lang}/`}>Back to Dethana</a></p>
+        <h1>{t.collectionNotFound}</h1>
+        <p><a href={`${config.baseUrl}/${config.lang}/`}>{t.backToDethana}</a></p>
       </div>
     )
   }
 
+  const titles = {
+    nikaya: t.colNikayaTitle,
+    abhidhamma: t.colAbhiTitle,
+    vinaya: t.colVinayaTitle,
+    expositions: t.colExpTitle,
+  }
+  const descs = {
+    nikaya: t.colNikayaDesc,
+    abhidhamma: t.colAbhiDesc,
+    vinaya: t.colVinayaDesc,
+    expositions: t.colExpDesc,
+  }
+  const uiTitle = titles[meta.id] || meta.title
+  const uiDesc = descs[meta.id] || meta.description
+
   return (
     <div className={styles.page}>
       <p className={styles.crumb}>
-        <a href={`${config.baseUrl}/${config.lang}/`}>Home</a>
+        <a href={`${config.baseUrl}/${config.lang}/`}>{t.home}</a>
         <span aria-hidden> / </span>
-        <span>{meta.title}</span>
+        <span>{uiTitle}</span>
       </p>
-      <h1 className={styles.title}>{meta.title}</h1>
+      <h1 className={styles.title}>{uiTitle}</h1>
       <p className={styles.note}>{meta.note}</p>
-      <p className={styles.lead}>{meta.description}</p>
-      <p className={styles.count}>{loaded ? `${filtered.length} books` : 'Loading…'}</p>
+      <p className={styles.lead}>{uiDesc}</p>
+      <p className={styles.count}>{loaded ? interpolate(t.booksCount, { n: filtered.length }) : t.loading}</p>
       {groups.map(([nikaya, layers]) => (
         <section key={nikaya} className={styles.group}>
           <h2 className={styles.groupTitle}>{nikaya}</h2>

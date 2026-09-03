@@ -1,31 +1,24 @@
+import { useUi } from '../i18n'
 import styles from '../ui/Dana.module.css'
 
 export function PrivacyPage() {
+  const { t } = useUi()
   return (
     <div className={styles.page}>
       <p className={styles.crumb}>
-        <a href="/en/">Home</a>
+        <a href="/en/">{t.home}</a>
         <span aria-hidden> / </span>
-        <span>Privacy</span>
+        <span>{t.privacy}</span>
       </p>
-      <h1 className={styles.title}>Privacy policy</h1>
+      <h1 className={styles.title}>{t.privacyTitle}</h1>
+      <p className={styles.lead}>{t.privacyLead}</p>
+      <h2 className={styles.heading}>{t.privacyAnalyticsH}</h2>
+      <p className={styles.lead}>{t.privacyAnalytics}</p>
+      <h2 className={styles.heading}>{t.privacyLocalH}</h2>
+      <p className={styles.lead}>{t.privacyLocal}</p>
+      <h2 className={styles.heading}>{t.privacyContactH}</h2>
       <p className={styles.lead}>
-        Dethana is offered so you can read the Tipiṭaka. You do not need an
-        account. We do not sell personal data.
-      </p>
-      <h2 className={styles.heading}>Analytics</h2>
-      <p className={styles.lead}>
-        Google Analytics loads only after you accept the cookie banner. You can
-        clear site data in your browser to reset that choice.
-      </p>
-      <h2 className={styles.heading}>Local storage</h2>
-      <p className={styles.lead}>
-        Reading preferences (script, font size, bookmarks, disclaimer) stay in
-        your browser. They are not sent to a server.
-      </p>
-      <h2 className={styles.heading}>Contact</h2>
-      <p className={styles.lead}>
-        Questions:{' '}
+        {t.privacyContact}{' '}
         <a className={styles.mail} href="mailto:dethana.org@gmail.com">dethana.org@gmail.com</a>
       </p>
     </div>

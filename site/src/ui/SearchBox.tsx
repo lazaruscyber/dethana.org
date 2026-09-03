@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { searchHeadings, type HeadingHit } from '../api/search'
+import { interpolate, useUi } from '../i18n'
 import styles from './SearchBox.module.css'
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export function SearchBox({ baseUrl, lang, size = 'nav', placeholder }: Props) {
+  const { t } = useUi()
   const [q, setQ] = useState('')
   const [hits, setHits] = useState<HeadingHit[]>([])
   const [open, setOpen] = useState(false)
@@ -46,12 +48,12 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder }: Props) {
         value={q}
         onChange={e => { setQ(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
-        placeholder={placeholder || (size === 'hero' ? 'Search the Tipiṭaka' : 'Search titles and text…')}
-        aria-label="Search the Tipiṭaka"
+        placeholder={placeholder || (size === 'hero' ? t.searchTipitaka : t.searchTitles)}
+        aria-label={t.searchTipitaka}
       />
       {open && q.trim().length >= 2 && (
         <div className={styles.panel} role="listbox">
-          {hits.length === 0 && <div className={styles.empty}>No matching headings. Press Enter for full-text search.</div>}
+          {hits.length === 0 && <div className={styles.empty}>{t.noHeadings}</div>}
           {hits.map(h => (
             <a
               key={`${h.book_id}-${h.para_id}`}
@@ -63,7 +65,7 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder }: Props) {
             </a>
           ))}
           <a className={styles.hit} href={`${baseUrl}/${lang}/search?q=${encodeURIComponent(q.trim())}`}>
-            Search all text for “{q.trim()}”
+            {interpolate(t.searchAllText, { q: q.trim() })}
           </a>
         </div>
       )}

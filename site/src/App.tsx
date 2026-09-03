@@ -12,12 +12,14 @@ import { fetchLangs } from './api/menu'
 import { collectionById } from './api/collections'
 import { BASE_URL, DEFAULT_LANG, parseRoute } from './routes'
 import { applySeo, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from './seo'
+import { useUi } from './i18n'
 import { initCookieConsent } from './cookie-consent.js'
 import type { LangInfo } from './types'
 import './ui/tokens.css'
 import './ui/content.css'
 
 export function App() {
+  const { t } = useUi()
   const [langs, setLangs] = useState<LangInfo[]>([])
   const route = parseRoute()
 
@@ -185,8 +187,8 @@ export function App() {
   return (
     <Shell baseUrl={BASE_URL} lang={DEFAULT_LANG} langs={available}>
       <div>
-        <h1>Page not found</h1>
-        <p><a href={`${BASE_URL}/${DEFAULT_LANG}/`}>Back to Dethana</a></p>
+        <h1>{t.pageNotFound}</h1>
+        <p><a href={`${BASE_URL}/${DEFAULT_LANG}/`}>{t.backToDethana}</a></p>
       </div>
     </Shell>
   )

@@ -1,5 +1,6 @@
 import { SearchBox } from './SearchBox'
 import { Logo } from './Logo'
+import { useUi } from '../i18n'
 import type { LangInfo } from '../types'
 import styles from './Header.module.css'
 
@@ -22,11 +23,12 @@ export function Header({
   baseUrl, lang, bookId, title, subtitle, bookmarked, showSearch,
   onMenu, onSettings, onBookmark,
 }: Props) {
+  const { t } = useUi()
   const home = `${baseUrl}/${lang}/`
   return (
     <header className={styles.header}>
       <div className={styles.left}>
-        <button className={styles.icon} type="button" aria-label="Contents" onClick={onMenu}>☰</button>
+        <button className={styles.icon} type="button" aria-label={t.contents} onClick={onMenu}>☰</button>
         <Logo href={home} inverted />
       </div>
       <div className={styles.center}>
@@ -49,7 +51,7 @@ export function Header({
           <button
             className={`${styles.icon} ${bookmarked ? styles.on : ''}`}
             type="button"
-            aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+            aria-label={bookmarked ? t.removeBookmark : t.bookmark}
             onClick={onBookmark}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -62,7 +64,7 @@ export function Header({
             </svg>
           </button>
         )}
-        <button className={styles.iconA} type="button" aria-label="Text settings" onClick={onSettings}>A</button>
+        <button className={styles.iconA} type="button" aria-label={t.textSettings} onClick={onSettings}>A</button>
       </div>
     </header>
   )

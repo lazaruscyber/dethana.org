@@ -1,5 +1,6 @@
 import type { MenuTree, TocItem } from '../types'
 import { slugForHeading } from '../api/menu'
+import { useUi } from '../i18n'
 import styles from './Sidebar.module.css'
 
 type Props = {
@@ -14,11 +15,12 @@ type Props = {
 }
 
 export function Sidebar({ mode, menu, lang, baseUrl, open, toc, bookId, activePara }: Props) {
+  const { t } = useUi()
   return (
-    <aside className={`${styles.aside} ${open ? styles.open : ''}`} aria-label={mode === 'toc' ? 'Contents' : 'Library'}>
+    <aside className={`${styles.aside} ${open ? styles.open : ''}`} aria-label={mode === 'toc' ? t.contents : t.library}>
       {mode === 'toc' && toc && bookId ? (
         <nav className={styles.group}>
-          <div className={styles.label}>Contents</div>
+          <div className={styles.label}>{t.contents}</div>
           {toc.map(item => (
             item.has_content ? (
               <a
