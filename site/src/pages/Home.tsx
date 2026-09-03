@@ -71,6 +71,39 @@ export function Home({ config }: { config: IndexConfig }) {
         </div>
       </section>
 
+      <section className={styles.body} id="get-started">
+        <div className={styles.columns}>
+          <div>
+            <h2 className={styles.getStarted}>{t.getStarted}</h2>
+            <div className={styles.grid}>
+              {COLLECTIONS.map((item, i) => {
+                const copy = {
+                  nikaya: { title: t.colNikayaTitle, desc: t.colNikayaDesc },
+                  abhidhamma: { title: t.colAbhiTitle, desc: t.colAbhiDesc },
+                  vinaya: { title: t.colVinayaTitle, desc: t.colVinayaDesc },
+                  expositions: { title: t.colExpTitle, desc: t.colExpDesc },
+                }[item.id]
+                return (
+                <a key={item.id} className={styles.tile} href={item.href(config.baseUrl, config.lang)} data-icon={i}>
+                  <span className={styles.tileIcon}>{ICONS[i]}</span>
+                  <span className={styles.tileCopy}>
+                    <span className={styles.tileTitle}>{copy?.title || item.title}</span>
+                    <span className={styles.tileNote}>{item.note}</span>
+                    <span className={styles.tileDesc}>{copy?.desc || item.description}</span>
+                  </span>
+                </a>
+                )
+              })}
+            </div>
+          </div>
+          <aside className={styles.help}>
+            <h2>{t.supportThisSite}</h2>
+            <p>{t.supportBlurb}</p>
+            <a className={styles.contact} href={`${config.baseUrl}/dana`}>{t.supportWithDana}</a>
+          </aside>
+        </div>
+      </section>
+
       {featured && (
         <section className={styles.journal} id="blogs" aria-labelledby="blogs-heading">
           <div className={styles.journalInner}>
@@ -106,39 +139,6 @@ export function Home({ config }: { config: IndexConfig }) {
           </div>
         </section>
       )}
-
-      <section className={styles.body} id="get-started">
-        <div className={styles.columns}>
-          <div>
-            <h2 className={styles.getStarted}>{t.getStarted}</h2>
-            <div className={styles.grid}>
-              {COLLECTIONS.map((item, i) => {
-                const copy = {
-                  nikaya: { title: t.colNikayaTitle, desc: t.colNikayaDesc },
-                  abhidhamma: { title: t.colAbhiTitle, desc: t.colAbhiDesc },
-                  vinaya: { title: t.colVinayaTitle, desc: t.colVinayaDesc },
-                  expositions: { title: t.colExpTitle, desc: t.colExpDesc },
-                }[item.id]
-                return (
-                <a key={item.id} className={styles.tile} href={item.href(config.baseUrl, config.lang)} data-icon={i}>
-                  <span className={styles.tileIcon}>{ICONS[i]}</span>
-                  <span className={styles.tileCopy}>
-                    <span className={styles.tileTitle}>{copy?.title || item.title}</span>
-                    <span className={styles.tileNote}>{item.note}</span>
-                    <span className={styles.tileDesc}>{copy?.desc || item.description}</span>
-                  </span>
-                </a>
-                )
-              })}
-            </div>
-          </div>
-          <aside className={styles.help}>
-            <h2>{t.supportThisSite}</h2>
-            <p>{t.supportBlurb}</p>
-            <a className={styles.contact} href={`${config.baseUrl}/dana`}>{t.supportWithDana}</a>
-          </aside>
-        </div>
-      </section>
 
       {disclaimer && (
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="disc-title">
