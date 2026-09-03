@@ -53,7 +53,7 @@ export function CollectionPage({ config }: { config: PageConfig }) {
 
   useEffect(() => {
     fetchMenu(config.baseUrl)
-      .then(data => setBooks(flattenMenu(data.menu)))
+      .then(data => setBooks(flattenMenu(data.menu, data.hierarchy)))
       .catch(() => setBooks([]))
       .finally(() => setLoaded(true))
   }, [config.baseUrl])

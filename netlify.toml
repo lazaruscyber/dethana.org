@@ -1,5 +1,5 @@
 [build]
-  command = "cd site && npm ci && npm run build"
+  command = "cd site && npm ci && npm run build && test -f dist/data/menu.json && test -f dist/data/books/Dhp.json.gz"
   publish = "site/dist"
 
 [build.environment]
@@ -19,25 +19,16 @@
   [headers.values]
     Cache-Control = "public, max-age=86400"
 
-[[redirects]]
-  from = "/api/menu"
-  to = "/.netlify/functions/menu"
-  status = 200
+[[headers]]
+  for = "/data/*.json"
+  [headers.values]
+    Content-Type = "application/json; charset=utf-8"
 
 [[redirects]]
-  from = "/api/langs"
-  to = "/.netlify/functions/langs"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
-
-[[redirects]]
-  from = "/api/search"
-  to = "/.netlify/functions/search"
-  status = 200
-
-[[redirects]]
-  from = "/api/book"
-  to = "/.netlify/functions/book"
-  status = 200
+  force = true
 
 [[redirects]]
   from = "/*"

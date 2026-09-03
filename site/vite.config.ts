@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { defineConfig, type PreviewServer, type ViteDevServer } from 'vite'
 import react from '@vitejs/plugin-react'
 import {
@@ -67,6 +68,11 @@ function jsonDataApi() {
     name: 'json-data-api',
     configureServer: attach,
     configurePreviewServer: attach,
+    closeBundle() {
+      if (!existsSync('dist/data/menu.json') || !existsSync('dist/data/books/Dhp.json.gz')) {
+        throw new Error('Vite did not copy site/public/data into dist. The library will show 0 books.')
+      }
+    },
   }
 }
 
