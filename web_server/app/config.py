@@ -36,16 +36,14 @@ class Config:
     DPD_GRAMMAR = False
     DPD_IPA = False
 
-    FIREBASE_CONFIG = {
-      "apiKey":            "AIzaSyBzh0o8SV-6I5meJkWgH_3ic-f8vpSMzyQ",
-      "authDomain":        "epitaka-org.firebaseapp.com",
-      "projectId":         "epitaka-org",
-      "storageBucket":     "epitaka-org.firebasestorage.app",
-      "messagingSenderId": "806999836281",
-      "appId":             "1:806999836281:web:491d6eb9dc73ac0defb6a8",
-      "measurementId": "G-MFCG30HTCQ",
-    }
-    FIREBASE_WEB_CONFIG = os.environ.get('FIREBASE_WEB_CONFIG', json.dumps(FIREBASE_CONFIG))
+    # Epitaka.org Firebase login is not used on dethana.org. Leave empty so
+    # no Google API key is committed. Set FIREBASE_WEB_CONFIG locally if you
+    # ever run the old Flask editor.
+    try:
+        FIREBASE_CONFIG = json.loads(os.environ.get('FIREBASE_WEB_CONFIG', '{}') or '{}')
+    except json.JSONDecodeError:
+        FIREBASE_CONFIG = {}
+    FIREBASE_WEB_CONFIG = os.environ.get('FIREBASE_WEB_CONFIG', '{}')
 
     # ── Translation DB auto-detection ─────────────────────────────────────
 
