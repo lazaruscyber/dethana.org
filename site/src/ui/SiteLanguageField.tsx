@@ -1,4 +1,4 @@
-import { useUi, type UiLang } from './i18n'
+import { useUi, type UiLang } from '../i18n'
 import styles from './Shell.module.css'
 
 export function SiteLanguageField() {
