@@ -30,8 +30,7 @@ export function AboutPage() {
       </p>
       <h2 className={styles.heading}>Open source</h2>
       <p className={styles.lead}>
-        The website is open source. This public build is a static site so it can
-        be hosted on Netlify from GitHub, without a Flask server.
+        The website is open source. This public build is a static site hosted on Cloudflare Pages.
       </p>
     </div>
   )

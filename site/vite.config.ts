@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
 import { defineConfig, type PreviewServer, type ViteDevServer } from 'vite'
 import react from '@vitejs/plugin-react'
 import {
@@ -72,6 +73,8 @@ function jsonDataApi() {
       if (!existsSync('dist/data/menu.json') || !existsSync('dist/data/books/Dhp.json.gz')) {
         throw new Error('Vite did not copy site/public/data into dist. The library will show 0 books.')
       }
+      const sitemap = spawnSync(process.execPath, ['scripts/write-sitemap.mjs', 'dist/sitemap.xml'], { stdio: 'inherit' })
+      if (sitemap.status !== 0) throw new Error('Failed to write sitemap.xml')
     },
   }
 }

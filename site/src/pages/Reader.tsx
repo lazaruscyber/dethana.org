@@ -4,6 +4,7 @@ import { loadSettings, saveSettings, applySettings, defaultSettings } from '../s
 import { TextProcessor, Script } from '../pali-script.js'
 import { fetchBook, fetchSection, slugForHeading } from '../api/menu'
 import { BASE_URL } from '../routes'
+import { applySeo, SITE_ORIGIN } from '../seo'
 import type { BookFile, LangInfo, SectionData, TocItem } from '../types'
 import styles from '../ui/Reader.module.css'
 import '../ui/content.css'
@@ -118,6 +119,32 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
     try { setBanner(localStorage.getItem(BANNER_KEY) !== '1') } catch { setBanner(true) }
     setBookmarked(loadBookmarks().includes(bookmarkId(bookId, activePara)))
   }, [bookId, activePara])
+
+  useEffect(() => {
+    const name = book?.book_name || bookId
+    const heading = toc.find(t => t.para_id === activePara)?.title
+    const title = heading
+      ? `${heading} — ${name} | Dethana.org`
+      : `${name} | Tipiṭaka | Dethana.org`
+    const description = heading
+      ? `Read “${heading}” from ${name} in Pāli with English on Dethana.org, a Chaṭṭha Saṅgāyana Tipiṭaka reader.`
+      : `Read ${name} in Pāli with English study translation on Dethana.org. Chaṭṭha Saṅgāyana (VRI) Tipiṭaka.`
+    applySeo({
+      title,
+      description,
+      path: window.location.pathname,
+      type: 'book',
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Book',
+        name,
+        inLanguage: ['pi', 'en'],
+        url: `${SITE_ORIGIN}${window.location.pathname}`,
+        publisher: { '@type': 'Organization', name: 'Dethana.org', url: SITE_ORIGIN },
+        isPartOf: { '@type': 'CreativeWork', name: 'Chaṭṭha Saṅgāyana Tipiṭaka' },
+      },
+    })
+  }, [book, bookId, activePara])
 
   useEffect(() => {
     let cancelled = false

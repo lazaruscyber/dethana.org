@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /data/
-Sitemap: /sitemap.xml
+Disallow: /en/search
+Disallow: /search
+
+Sitemap: https://dethana.org/sitemap.xml
