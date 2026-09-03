@@ -135,15 +135,14 @@ Read the Pāli text in any major Southeast Asian script:
 
 ## 🏗️ Architecture
 
-The public website is a **static React app**. Book text is **JSON files**, not SQL. Netlify Functions (free) read those files and serve `/api/menu`, `/api/search`, and `/api/book`.
+The public website is a **static React app**. Book text is **JSON files** under `/data/`. There is no database at runtime.
 
 ```
 dethana.org/
 ├── site/                        # React UI (Vite)
 │   └── public/data/             # Gzipped JSON (the data store)
-├── netlify/functions/           # Free Netlify Functions — no database
 ├── scripts/export_static.py     # One-time SQLite → JSON on your PC
-└── netlify.toml
+└── site/public/_redirects       # SPA routing for Cloudflare Pages
 ```
 
 ### Tech Stack
@@ -151,9 +150,8 @@ dethana.org/
 | Layer | Technology |
 |-------|-----------|
 | **Public site** | React + Vite (static files) |
-| **Data** | JSON files on Netlify’s CDN (no SQL at runtime) |
-| **API** | Netlify Functions (menu, search, book sections) |
-| **Hosting** | Netlify free / Starter |
+| **Data** | JSON files on the CDN (no SQL at runtime) |
+| **Hosting** | Cloudflare Pages (free) |
 | **Local corpora** | SQLite only on your PC, to build the JSON |
 
 ---
@@ -183,13 +181,24 @@ npm run dev
 
 Open `http://localhost:5173/en/`.
 
-### Publish on GitHub → Netlify
+### Publish on GitHub → Cloudflare Pages
+
+The site is static, so it does not need Netlify Functions.
 
 1. Run `python scripts/export_static.py` so `site/public/data/` exists.
 2. Commit **source + the exported JSON**. Do **not** commit `*.db` or `node_modules`.
-3. In Netlify: **Add new site → Import from GitHub**. Leave the base directory empty (repo root). `netlify.toml` builds `site/` and publishes `site/dist`.
+3. At [Cloudflare Pages](https://pages.cloudflare.com): **Create** → **Connect to Git** → this GitHub repo.
+4. Build settings:
+   - **Framework preset:** None
+   - **Root directory:** empty (repo root)
+   - **Build command:** `cd site && npm ci && npm run build`
+   - **Build output directory:** `site/dist`
+   - **Environment variable:** `NODE_VERSION` = `20`
+5. After the first deploy, **Custom domains** → add `dethana.org` and `www`. Use Cloudflare’s nameservers or a CNAME, then wait for HTTPS.
 
-There is **no SQL database on Netlify**. Functions read JSON files. The `.db` files never leave your computer.
+The `.db` files never leave your computer.
+
+**GitHub Pages** also works (repo Settings → Pages) if you want to stay on GitHub only. Cloudflare is the closer Netlify replacement: custom domain, SPA rewrites, and a large free CDN.
 
 The Flask app in `web_server/` is optional (translation editor / old VPS).
 
