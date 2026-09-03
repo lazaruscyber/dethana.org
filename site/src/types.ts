@@ -95,7 +95,7 @@ export type IndexConfig = {
 }
 
 export type PageConfig = {
-  page: 'about' | 'privacy' | '404' | 'outline' | 'search' | 'collection' | 'dana'
+  page: 'about' | 'translation-policy' | 'privacy' | '404' | 'outline' | 'search' | 'collection' | 'dana'
   baseUrl: string
   lang: string
   availableLangs: LangInfo[]
@@ -118,6 +118,7 @@ export type AppRoute =
   | { name: 'search'; lang: string; query: string }
   | { name: 'collection'; lang: string; collection: string }
   | { name: 'about' }
+  | { name: 'translation-policy' }
   | { name: 'privacy' }
   | { name: 'dana' }
   | { name: 'notfound' }

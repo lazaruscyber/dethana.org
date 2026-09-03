@@ -23,7 +23,8 @@ function loc(path, changefreq = 'weekly', priority = '0.6') {
 const urls = [
   loc('/', 'daily', '1.0'),
   loc('/en/', 'daily', '1.0'),
-  loc('/about', 'monthly', '0.5'),
+  loc('/about', 'monthly', '0.6'),
+  loc('/translation-policy', 'monthly', '0.4'),
   loc('/privacy', 'yearly', '0.2'),
   loc('/dana', 'monthly', '0.3'),
   loc('/en/collection/nikaya', 'weekly', '0.8'),

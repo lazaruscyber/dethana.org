@@ -17,11 +17,7 @@
   font-weight: 700;
   color: var(--navy);
 }
-.lead {
-  margin: 0.85rem 0 1.4rem;
-  line-height: 1.65;
-  color: #3a4250;
-}
+.lead a { color: var(--navy); font-weight: 600; }
 .heading {
   margin: 1.8rem 0 0.7rem;
   font-family: var(--font-serif);

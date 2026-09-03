@@ -6,6 +6,7 @@ import { SearchPage } from './pages/SearchPage'
 import { CollectionPage } from './pages/CollectionPage'
 import { DanaPage } from './pages/DanaPage'
 import { AboutPage } from './pages/AboutPage'
+import { TranslationPolicyPage } from './pages/TranslationPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { fetchLangs } from './api/menu'
 import { collectionById } from './api/collections'
@@ -54,8 +55,16 @@ export function App() {
     }
     if (route.name === 'about') {
       applySeo({
-        title: 'About | Dethana.org',
-        description: 'How Dethana presents the Chaṭṭha Saṅgāyana Tipiṭaka, commentaries, and AI-assisted study translations.',
+        title: 'About Dethana.org',
+        description: 'Dethana.org is an institution and a Dhamma missionary movement: a free library of the Chaṭṭha Saṅgāyana Tipiṭaka for the good of the many.',
+        path,
+      })
+      return
+    }
+    if (route.name === 'translation-policy') {
+      applySeo({
+        title: 'Translation Policy | Dethana.org',
+        description: 'How Dethana produces AI-assisted study translations of the Chaṭṭha Saṅgāyana Tipiṭaka, and what those translations are not.',
         path,
       })
       return
@@ -161,6 +170,14 @@ export function App() {
     return (
       <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
         <AboutPage />
+      </Shell>
+    )
+  }
+
+  if (route.name === 'translation-policy') {
+    return (
+      <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
+        <TranslationPolicyPage />
       </Shell>
     )
   }

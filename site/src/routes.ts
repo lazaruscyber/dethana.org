@@ -19,7 +19,8 @@ export function parseRoute(pathname = window.location.pathname, search = window.
   const q = new URLSearchParams(search).get('q') || ''
 
   if (parts.length === 0) return { name: 'home', lang: DEFAULT_LANG }
-  if (parts[0] === 'about' || parts[0] === 'about-translation') return { name: 'about' }
+  if (parts[0] === 'about' || parts[0] === 'about-dethana') return { name: 'about' }
+  if (parts[0] === 'translation-policy' || parts[0] === 'about-translation') return { name: 'translation-policy' }
   if (parts[0] === 'privacy') return { name: 'privacy' }
   if (parts[0] === 'dana') return { name: 'dana' }
   if (parts[0] === 'search') return { name: 'search', lang: DEFAULT_LANG, query: q }

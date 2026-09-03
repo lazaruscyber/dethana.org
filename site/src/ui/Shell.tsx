@@ -77,6 +77,7 @@ export function Shell({
           {!hideFooter && (
             <div className={styles.footer}>
               <a href={`${baseUrl}/about`}>About</a>
+              <a href={`${baseUrl}/translation-policy`}>Translation Policy</a>
               <a href={`${baseUrl}/dana`}>Dana</a>
               <a href={`${baseUrl}/privacy`}>Privacy</a>
               <span>Dethana</span>
