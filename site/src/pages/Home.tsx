@@ -28,7 +28,10 @@ export function Home({ config }: { config: IndexConfig }) {
     <div className={styles.landing}>
       <section className={styles.hero}>
         <div className={styles.heroInner}>
-          <h1 className={styles.question}>What can we help you do?</h1>
+          <h1 className={styles.question}>Dethana.org</h1>
+          <p className={styles.tagline}>
+            “Go forth, O bhikkhus, for the good of the many… Teach, O bhikkhus, the Dhamma that is good in the beginning, good in the middle, and good in the end…”
+          </p>
           <div className={styles.heroSearch}>
             <SearchBox
               baseUrl={config.baseUrl}
