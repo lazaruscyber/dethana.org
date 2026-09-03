@@ -2,7 +2,7 @@ export const SITE_ORIGIN = 'https://dethana.org'
 export const DEFAULT_TITLE = 'Dethana.org — Chaṭṭha Saṅgāyana Tipiṭaka'
 export const DEFAULT_DESCRIPTION =
   'Read the Pāli Tipiṭaka, Vinaya, Abhidhamma, and Aṭṭhakathā with English study translations. Dhammapada, suttas, and commentaries on Dethana.org.'
-export const OG_IMAGE = `${SITE_ORIGIN}/og-image.png`
+export const OG_IMAGE = `${SITE_ORIGIN}/og-image.png?v=20260903`
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
   let el = document.head.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null
@@ -59,7 +59,10 @@ export function applySeo(opts: {
   upsertMeta('property', 'og:title', opts.title)
   upsertMeta('property', 'og:description', opts.description)
   upsertMeta('property', 'og:url', url)
-  upsertMeta('property', 'og:image', OG_IMAGE)
+    upsertMeta('property', 'og:image', OG_IMAGE)
+  upsertMeta('property', 'og:image:type', 'image/png')
+  upsertMeta('property', 'og:image:width', '1200')
+  upsertMeta('property', 'og:image:height', '630')
   upsertMeta('name', 'twitter:card', 'summary_large_image')
   upsertMeta('name', 'twitter:title', opts.title)
   upsertMeta('name', 'twitter:description', opts.description)
