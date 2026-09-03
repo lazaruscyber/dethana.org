@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
 import { COLLECTIONS } from '../api/collections'
+import { blogPath, postsByDate } from '../blog/posts'
 import { SearchBox } from '../ui/SearchBox'
 import { useUi } from '../i18n'
 import type { IndexConfig } from '../types'
 import styles from '../ui/Home.module.css'
+
+function formatDate(iso: string, locale: string) {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString(locale === 'my' ? 'my-MM' : 'en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
 
 const POPULAR = [
   { label: 'Dhammapada', href: (base: string, lang: string) => `${base}/${lang}/book/Dhp` },
@@ -19,8 +29,11 @@ const ICONS = [
 ]
 
 export function Home({ config }: { config: IndexConfig }) {
-  const { t } = useUi()
+  const { t, uiLang } = useUi()
   const [disclaimer, setDisclaimer] = useState(false)
+  const posts = postsByDate()
+  const featured = posts[0]
+  const rest = posts.slice(1, 4)
 
   useEffect(() => {
     try { setDisclaimer(localStorage.getItem('epika_disclaimer_skip') !== '1') } catch { setDisclaimer(true) }
@@ -57,6 +70,42 @@ export function Home({ config }: { config: IndexConfig }) {
           </svg>
         </div>
       </section>
+
+      {featured && (
+        <section className={styles.journal} id="blogs" aria-labelledby="blogs-heading">
+          <div className={styles.journalInner}>
+            <div className={styles.journalHead}>
+              <div>
+                <p className={styles.journalKicker}>{t.blogsKicker}</p>
+                <h2 id="blogs-heading" className={styles.journalTitle}>{t.blogs}</h2>
+              </div>
+              <a className={styles.journalAll} href={blogPath()}>{t.allBlogs}</a>
+            </div>
+            <div className={styles.journalGrid}>
+              <a className={styles.featured} href={blogPath(featured.slug)}>
+                <span className={styles.featuredKicker}>{featured.kicker}</span>
+                <span className={styles.featuredTitle}>{featured.title}</span>
+                <time className={styles.featuredDate} dateTime={featured.date}>
+                  {formatDate(featured.date, uiLang)}
+                </time>
+                <span className={styles.featuredExcerpt}>{featured.excerpt}</span>
+                <span className={styles.featuredRead}>{t.readArticle}</span>
+              </a>
+              <ul className={styles.journalList}>
+                {rest.map(post => (
+                  <li key={post.slug}>
+                    <a href={blogPath(post.slug)}>
+                      <span className={styles.sideKicker}>{post.kicker}</span>
+                      <span className={styles.sideTitle}>{post.title}</span>
+                      <time dateTime={post.date}>{formatDate(post.date, uiLang)}</time>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className={styles.body} id="get-started">
         <div className={styles.columns}>

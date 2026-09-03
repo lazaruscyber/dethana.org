@@ -121,4 +121,6 @@ export type AppRoute =
   | { name: 'translation-policy' }
   | { name: 'privacy' }
   | { name: 'dana' }
+  | { name: 'blog' }
+  | { name: 'blog-post'; slug: string }
   | { name: 'notfound' }

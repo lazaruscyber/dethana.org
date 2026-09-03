@@ -1,0 +1,198 @@
+.index,
+.article {
+  width: min(46rem, 100%);
+  margin: 0 auto;
+  padding: 1.6rem 1.25rem 2.5rem;
+}
+
+.crumb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+}
+.crumb a { color: var(--navy); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+
+.kicker {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: var(--font-sans);
+}
+
+.indexHead { margin-bottom: 2rem; }
+.indexTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  color: var(--navy);
+}
+.indexLead {
+  margin: 0.7rem 0 0;
+  max-width: 34rem;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+.list li { border-bottom: 1px solid var(--border); }
+.row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 1.4rem;
+  padding: 1.35rem 0 1.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+.rowDate {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
+  padding-top: 0.2rem;
+}
+.rowKicker {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 0.28rem;
+}
+.rowTitle {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.25;
+}
+.rowExcerpt {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: #3a4250;
+}
+.row:hover .rowTitle { text-decoration: underline; }
+
+.articleTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.articleDate {
+  display: block;
+  margin: 0.7rem 0 1.6rem;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.prose p {
+  margin: 0 0 1.05rem;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #2c2c2c;
+  font-family: var(--font-serif);
+}
+.prose p:first-of-type {
+  overflow: hidden;
+}
+.prose p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-logo);
+  font-size: 3.15rem;
+  line-height: 0.8;
+  padding: 0.12rem 0.45rem 0 0;
+  color: var(--navy);
+  font-weight: 700;
+}
+.prose h2 {
+  margin: 1.7rem 0 0.65rem;
+  font-family: var(--font-serif);
+  font-size: 1.22rem;
+  color: var(--navy);
+}
+.prose a {
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+.prose blockquote {
+  margin: 1.3rem 0 1.5rem;
+  padding: 0.15rem 0 0.15rem 1.1rem;
+  border-left: 3px solid var(--gold);
+}
+.prose blockquote p {
+  margin: 0;
+  font-style: italic;
+  color: var(--navy);
+}
+.prose blockquote cite {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--muted);
+  font-family: var(--font-sans);
+}
+
+.more {
+  margin-top: 2.6rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--border);
+}
+.more h2 {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--navy);
+}
+.more ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.more a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--navy);
+  font-family: var(--font-serif);
+  font-weight: 600;
+}
+.more time {
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
+}
+.more a:hover span { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; gap: 0.25rem; padding: 1.15rem 0 1.25rem; }
+  .more a { flex-direction: column; gap: 0.15rem; }
+}

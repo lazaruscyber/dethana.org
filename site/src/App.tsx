@@ -8,8 +8,11 @@ import { DanaPage } from './pages/DanaPage'
 import { AboutPage } from './pages/AboutPage'
 import { TranslationPolicyPage } from './pages/TranslationPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
+import { BlogIndexPage } from './pages/BlogIndexPage'
+import { BlogPostPage } from './pages/BlogPostPage'
 import { fetchLangs } from './api/menu'
 import { collectionById } from './api/collections'
+import { postBySlug } from './blog/posts'
 import { BASE_URL, DEFAULT_LANG, parseRoute } from './routes'
 import { applySeo, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from './seo'
 import { useUi } from './i18n'
@@ -87,13 +90,52 @@ export function App() {
       })
       return
     }
+    if (route.name === 'blog') {
+      applySeo({
+        title: 'Blogs | Dethana.org',
+        description: 'Notes from Dethana.org on the Tipiṭaka library, how to read Pāli with a study translation, and where to begin.',
+        path: '/blog',
+        jsonLd: {
+          '@context': 'https://schema.org',
+          '@type': 'Blog',
+          name: 'Dethana.org Blogs',
+          url: 'https://dethana.org/blog',
+          publisher: { '@type': 'Organization', name: 'Dethana.org', url: 'https://dethana.org/' },
+        },
+      })
+      return
+    }
+    if (route.name === 'blog-post') {
+      const post = postBySlug(route.slug)
+      if (post) {
+        applySeo({
+          title: `${post.title} | Dethana.org`,
+          description: post.description,
+          path: `/blog/${post.slug}`,
+          type: 'article',
+          jsonLd: {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: post.title,
+            description: post.description,
+            datePublished: post.date,
+            url: `https://dethana.org/blog/${post.slug}`,
+            author: { '@type': 'Organization', name: 'Dethana.org' },
+            publisher: { '@type': 'Organization', name: 'Dethana.org', url: 'https://dethana.org/' },
+            image: 'https://dethana.org/og-image.png?v=20260903',
+            mainEntityOfPage: `https://dethana.org/blog/${post.slug}`,
+          },
+        })
+        return
+      }
+    }
     applySeo({
       title: 'Page not found | Dethana.org',
       description: DEFAULT_DESCRIPTION,
       path,
       noindex: true,
     })
-  }, [route.name, 'collection' in route ? route.collection : '', 'query' in route ? route.query : ''])
+  }, [route.name, 'collection' in route ? route.collection : '', 'query' in route ? route.query : '', 'slug' in route ? route.slug : ''])
 
   const lang = 'lang' in route ? route.lang : DEFAULT_LANG
   const available = langs.length ? langs : [{
@@ -182,6 +224,25 @@ export function App() {
         <TranslationPolicyPage />
       </Shell>
     )
+  }
+
+  if (route.name === 'blog') {
+    return (
+      <Shell baseUrl={BASE_URL} lang={lang} langs={available} fullBleed>
+        <BlogIndexPage />
+      </Shell>
+    )
+  }
+
+  if (route.name === 'blog-post') {
+    const post = postBySlug(route.slug)
+    if (post) {
+      return (
+        <Shell baseUrl={BASE_URL} lang={lang} langs={available} fullBleed>
+          <BlogPostPage post={post} />
+        </Shell>
+      )
+    }
   }
 
   return (

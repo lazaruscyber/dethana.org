@@ -23,6 +23,10 @@ export function parseRoute(pathname = window.location.pathname, search = window.
   if (parts[0] === 'translation-policy' || parts[0] === 'about-translation') return { name: 'translation-policy' }
   if (parts[0] === 'privacy') return { name: 'privacy' }
   if (parts[0] === 'dana') return { name: 'dana' }
+  if (parts[0] === 'blog' || parts[0] === 'blogs') {
+    if (parts[1]) return { name: 'blog-post', slug: parts[1] }
+    return { name: 'blog' }
+  }
   if (parts[0] === 'search') return { name: 'search', lang: DEFAULT_LANG, query: q }
 
   const lang = parts[0]
