@@ -1,0 +1,55 @@
+.page {
+  width: 100%;
+  margin: 0;
+  padding: 1.6rem 5vw 3rem;
+}
+.crumb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+}
+.crumb a { color: var(--navy); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--navy);
+}
+.note {
+  margin: 0.35rem 0 0;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+.lead {
+  margin: 0.85rem 0 1.4rem;
+  line-height: 1.6;
+  max-width: 38rem;
+}
+.count { color: var(--muted); font-size: 0.82rem; font-style: italic; margin: 0 0 1.4rem; }
+.group { margin: 0 0 1.8rem; }
+.groupTitle {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.layer {
+  margin: 0.85rem 0 0.25rem;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--navy);
+  font-weight: 600;
+}
+.list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 2.5rem;
+}
+@media (max-width: 860px) {
+  .list { grid-template-columns: 1fr; }
+}

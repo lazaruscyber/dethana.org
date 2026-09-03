@@ -1,0 +1,95 @@
+import { useEffect, useState } from 'react'
+import { COLLECTIONS } from '../api/collections'
+import { SearchBox } from '../ui/SearchBox'
+import type { IndexConfig } from '../types'
+import styles from '../ui/Home.module.css'
+
+const POPULAR = [
+  { label: 'Dhammapada', href: (base: string, lang: string) => `${base}/${lang}/book/Dhp` },
+  { label: 'Vinaya', href: (base: string, lang: string) => `${base}/${lang}/collection/vinaya` },
+  { label: 'Abhidhamma', href: (base: string, lang: string) => `${base}/${lang}/collection/abhidhamma` },
+]
+
+const ICONS = [
+  <svg key="book" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 6.5h11.5a3.5 3.5 0 0 1 3.5 3.5v15.2H10A3 3 0 0 1 7 22.2V6.5z" fill="none" stroke="currentColor" strokeWidth="1.7"/><path d="M10.5 25.2h14V9.2" fill="none" stroke="currentColor" strokeWidth="1.7"/></svg>,
+  <svg key="abhi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.7"/><path d="M16 10.5v5.2l3.4 2.1" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>,
+  <svg key="vinaya" viewBox="0 0 32 32" aria-hidden="true"><path d="M10 7h12M16 7v18M9 25h14" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/><path d="M11 13h10M11 18h10" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>,
+  <svg key="comm" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 8h16v18H8z" fill="none" stroke="currentColor" strokeWidth="1.7"/><path d="M12 13h8M12 17h8M12 21h5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>,
+]
+
+export function Home({ config }: { config: IndexConfig }) {
+  const [disclaimer, setDisclaimer] = useState(false)
+
+  useEffect(() => {
+    try { setDisclaimer(localStorage.getItem('epika_disclaimer_skip') !== '1') } catch { setDisclaimer(true) }
+  }, [])
+
+  return (
+    <div className={styles.landing}>
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
+          <h1 className={styles.question}>What can we help you do?</h1>
+          <div className={styles.heroSearch}>
+            <SearchBox
+              baseUrl={config.baseUrl}
+              lang={config.lang}
+              size="hero"
+              placeholder="Search the Tipiṭaka"
+            />
+          </div>
+          <div className={styles.popular}>
+            <span>Popular searches</span>
+            {POPULAR.map(item => (
+              <a key={item.label} href={item.href(config.baseUrl, config.lang)}>{item.label}</a>
+            ))}
+          </div>
+        </div>
+        <div className={styles.waves} aria-hidden="true">
+          <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+            <path fill="#9eb6c9" d="M0,50 C240,90 480,10 720,40 C960,70 1200,20 1440,48 L1440,90 L0,90 Z" />
+            <path fill="#d5e0ea" d="M0,62 C300,20 620,88 900,50 C1140,22 1300,70 1440,58 L1440,90 L0,90 Z" />
+            <path fill="#ffffff" d="M0,72 C360,40 780,100 1100,68 C1280,50 1380,78 1440,70 L1440,90 L0,90 Z" />
+          </svg>
+        </div>
+      </section>
+
+      <section className={styles.body} id="get-started">
+        <div className={styles.columns}>
+          <div>
+            <h2 className={styles.getStarted}>Get Started</h2>
+            <div className={styles.grid}>
+              {COLLECTIONS.map((item, i) => (
+                <a key={item.id} className={styles.tile} href={item.href(config.baseUrl, config.lang)} data-icon={i}>
+                  <span className={styles.tileIcon}>{ICONS[i]}</span>
+                  <span className={styles.tileCopy}>
+                    <span className={styles.tileTitle}>{item.title}</span>
+                    <span className={styles.tileNote}>{item.note}</span>
+                    <span className={styles.tileDesc}>{item.description}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+          <aside className={styles.help}>
+            <h2>Support This Site</h2>
+            <p>Help with Dana for Dethana's hosting and expenses.</p>
+            <a className={styles.contact} href={`${config.baseUrl}/dana`}>Support with Dana</a>
+          </aside>
+        </div>
+      </section>
+
+      {disclaimer && (
+        <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="disc-title">
+          <div className={styles.card}>
+            <h2 id="disc-title">Research translations</h2>
+            <p>These are AI-assisted study translations, not a replacement for the original Pāli or an authoritative rendering.</p>
+            <button type="button" onClick={() => {
+              try { localStorage.setItem('epika_disclaimer_skip', '1') } catch { /* ignore */ }
+              setDisclaimer(false)
+            }}>Continue</button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

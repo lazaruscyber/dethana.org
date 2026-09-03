@@ -1,0 +1,35 @@
+# Python / local corpora — too large for GitHub (100 MB file limit)
+web_server/data/
+*.db
+*.db-shm
+*.db-wal
+__pycache__/
+*.log
+.env
+serviceAccountKey.json
+env/
+env3.10/
+
+# Node
+node_modules/
+site/dist/
+
+# OS / scratch
+.DS_Store
+*.zip
+*.csv
+*.ipynb
+algo-tmp
+/dist/
+dist.zip
+backup/
+embeddings.npz
+tipitaka_en/
+tipitaka_vn/
+export_test/
+output/
+translations.*
+paliaudio/
+romn/
+web_server/progress/
+chroma_pali_db

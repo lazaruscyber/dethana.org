@@ -1,0 +1,124 @@
+.folio {
+  text-align: center;
+  padding: 2.4rem 0.5rem 1.6rem;
+}
+.folioTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4.5vw, 2.85rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.15;
+}
+.folioMark {
+  margin: 0.45rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  background: #efefef;
+  color: #555;
+  font-size: 0.82rem;
+  padding: 0.42rem 2.2rem;
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  box-sizing: border-box;
+}
+.bannerBtn {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 0.18rem 0.55rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text);
+}
+.bannerBtn:hover { border-color: var(--gold); }
+.bannerX {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.langPanel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1rem 0.9rem;
+  background: #f4f4f4;
+  border-bottom: 1px solid var(--border);
+}
+.langPanel a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.82rem;
+  padding: 0.15rem 0.4rem;
+  border-bottom: 1px solid transparent;
+}
+.langPanel a:hover, .langPanel a[data-on="true"] { border-bottom-color: var(--gold); }
+
+.article { width: 100%; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 32, 18, 0.28);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  z-index: 70;
+  padding: calc(var(--header-h) + 0.4rem) 0.6rem 1rem;
+}
+.modalBox {
+  width: min(20rem, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1rem 1.05rem 1.1rem;
+  box-shadow: 0 10px 30px rgba(40, 32, 18, 0.12);
+}
+.modalBox h2 {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font-serif);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.82rem;
+  color: #444;
+}
+.field select, .field input[type="range"] { width: 100%; font: inherit; }
+.actions { display: flex; justify-content: flex-end; gap: 0.4rem; margin-top: 0.35rem; }
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 0.35rem 0.7rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btnPrimary { background: var(--text); color: #fff; border-color: transparent; }

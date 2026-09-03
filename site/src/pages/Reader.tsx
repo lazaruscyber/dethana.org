@@ -1,0 +1,348 @@
+import { useEffect, useRef, useState } from 'react'
+import { Shell } from '../ui/Shell'
+import { loadSettings, saveSettings, applySettings, defaultSettings } from '../settings.js'
+import { TextProcessor, Script } from '../pali-script.js'
+import { fetchBook, fetchSection, slugForHeading } from '../api/menu'
+import { BASE_URL } from '../routes'
+import type { BookFile, LangInfo, SectionData, TocItem } from '../types'
+import styles from '../ui/Reader.module.css'
+import '../ui/content.css'
+
+type Props = {
+  lang: string
+  bookId: string
+  paraId: number | null
+  langs: LangInfo[]
+}
+
+const BANNER_KEY = 'epitaka_hide_trans_banner'
+const BOOKMARK_KEY = 'epitaka_bookmarks'
+
+function readerScript(settings: Record<string, any>) {
+  if (settings.scriptManuallySet && settings.paliScript) return settings.paliScript
+  return Script.MY
+}
+
+function bookmarkId(bookId: string, paraId: number | null) {
+  return `${bookId}:${paraId || 0}`
+}
+
+function loadBookmarks(): string[] {
+  try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || '[]') } catch { return [] }
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+function renderSection(data: SectionData) {
+  const rows = (data.sentences || []).map(s => {
+    const pages = [
+      s.vripage && `<span class="page-num-badge" data-page-system="vri">VRI ${s.vripage}</span>`,
+      s.ptspage && `<span class="page-num-badge" data-page-system="pts">PTS ${s.ptspage}</span>`,
+      s.mypage && `<span class="page-num-badge" data-page-system="myanmar">Myanmar ${s.mypage}</span>`,
+      s.thaipage && `<span class="page-num-badge" data-page-system="thai">Thai ${s.thaipage}</span>`,
+    ].filter(Boolean).join('')
+    const tr = s.translation ? `<div class="translation-text">${s.translation}</div>` : ''
+    return `<div class="sentence-row" id="p-${s.para_id}-l-${s.line_id}">
+      <div class="pali-text">${s.pali || ''}</div>${pages}${tr}
+    </div>`
+  }).join('')
+  return rows
+}
+
+function buildArticle(book: BookFile, lang: string) {
+  const article = document.createElement('article')
+  article.id = 'book-article'
+  article.className = 'reader-focus'
+  for (const item of book.toc || []) {
+    const slug = item.slug || slugForHeading(item.title, item.para_id)
+    const section = document.createElement('section')
+    section.className = 'section-block'
+    section.id = `para-${item.para_id}`
+    section.dataset.paraId = String(item.para_id)
+    section.setAttribute('aria-label', item.title)
+    if (item.has_content) {
+      section.innerHTML = `
+        <a href="${BASE_URL}/${lang}/book/${book.book_id}/${slug}" class="section-heading-link" data-level="${item.level}">
+          <span class="section-heading-label">
+            <span class="section-heading-text pali-text">${escapeHtml(item.title)}</span>
+          </span>
+        </a>
+        <div class="section-content" aria-hidden="true"></div>`
+    } else {
+      section.innerHTML = `
+        <div class="section-heading-link section-heading-empty" data-level="${item.level}">
+          <span class="section-heading-label">
+            <span class="section-heading-text pali-text">${escapeHtml(item.title)}</span>
+          </span>
+        </div>
+        <div class="section-content" aria-hidden="true"></div>`
+    }
+    article.appendChild(section)
+  }
+  return article
+}
+
+export function Reader({ lang, bookId, paraId, langs }: Props) {
+  const host = useRef<HTMLDivElement>(null)
+  const original = useRef(new WeakMap<Element, string>())
+  const bookRef = useRef<BookFile | null>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const [banner, setBanner] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [book, setBook] = useState<BookFile | null>(null)
+  const [settings, setSettings] = useState(() => {
+    const loaded = loadSettings(lang)
+    if (!loaded.scriptManuallySet) loaded.paliScript = Script.MY
+    return loaded
+  })
+  const [activePara, setActivePara] = useState<number | null>(paraId)
+  const [bookmarked, setBookmarked] = useState(false)
+  const scriptRef = useRef(readerScript(settings))
+  const toc: TocItem[] = book?.toc || []
+  const section = toc.find(t => t.para_id === activePara)
+  const headerTitle = book?.book_name || bookId
+
+  useEffect(() => {
+    scriptRef.current = readerScript(settings)
+  }, [settings])
+
+  useEffect(() => {
+    try { setBanner(localStorage.getItem(BANNER_KEY) !== '1') } catch { setBanner(true) }
+    setBookmarked(loadBookmarks().includes(bookmarkId(bookId, activePara)))
+  }, [bookId, activePara])
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError('')
+    fetchBook(bookId)
+      .then(data => {
+        if (cancelled) return
+        bookRef.current = data
+        setBook(data)
+        setLoading(false)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setError('This book is not in the static export yet.')
+        setLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [bookId])
+
+  useEffect(() => {
+    const root = host.current
+    if (!root || !book) return
+    root.innerHTML = ''
+    const article = buildArticle(book, lang)
+    root.appendChild(article)
+    applyReader(settings)
+
+    const openSection = async (pid: number, href?: string) => {
+      const sectionEl = root.querySelector(`.section-block[data-para-id="${pid}"]`) as HTMLElement | null
+      const content = sectionEl?.querySelector('.section-content') as HTMLElement | null
+      if (!content) return
+      root.querySelectorAll('.section-content.open').forEach(el => {
+        if (el !== content) {
+          el.classList.remove('open')
+          el.setAttribute('aria-hidden', 'true')
+        }
+      })
+      let payload = bookRef.current?.sections?.[String(pid)]
+      if (!payload) {
+        content.innerHTML = '<p class="translation-text">Loading…</p>'
+        try {
+          payload = await fetchSection(bookId, pid)
+          if (bookRef.current) {
+            bookRef.current.sections = bookRef.current.sections || {}
+            bookRef.current.sections[String(pid)] = payload
+          }
+        } catch {
+          payload = { sentences: [] }
+        }
+      }
+      content.innerHTML = payload?.sentences?.length
+        ? renderSection(payload)
+        : '<p class="translation-text">No text in this section.</p>'
+      content.classList.add('open')
+      content.setAttribute('aria-hidden', 'false')
+      setActivePara(pid)
+      applyPaliScript(scriptRef.current)
+      if (href) window.history.replaceState({}, '', href)
+    }
+
+    const onClick = (e: MouseEvent) => {
+      const row = (e.target as HTMLElement).closest('.sentence-row') as HTMLElement | null
+      if (row && root.contains(row) && !(e.target as HTMLElement).closest('a')) {
+        root.querySelectorAll('.sentence-row.is-active').forEach(el => el.classList.remove('is-active'))
+        row.classList.add('is-active')
+      }
+      const a = (e.target as HTMLElement).closest('a.section-heading-link') as HTMLAnchorElement | null
+      if (!a || !root.contains(a)) return
+      const sectionEl = a.closest('.section-block') as HTMLElement | null
+      const pid = Number(sectionEl?.dataset.paraId)
+      if (!pid) return
+      e.preventDefault()
+      void openSection(pid, a.href)
+    }
+    root.addEventListener('click', onClick)
+
+    const start = paraId
+      || toc.find(t => t.has_content)?.para_id
+      || null
+    if (start) {
+      const link = root.querySelector(`.section-block[data-para-id="${start}"] a.section-heading-link`) as HTMLAnchorElement | null
+      void openSection(start, link?.href)
+    }
+
+    return () => root.removeEventListener('click', onClick)
+  }, [book, lang])
+
+  function applyPaliScript(targetScript: string) {
+    document.body.setAttribute('script', targetScript)
+    document.querySelectorAll('.pali-text, .book-link-badge').forEach(el => {
+      if (!original.current.has(el)) original.current.set(el, el.innerHTML)
+      const roman = original.current.get(el) || ''
+      el.innerHTML = targetScript === Script.RO
+        ? roman
+        : roman.replace(/(<[^>]+>)|([^<]+)/g, (_m: string, tag: string, text: string) => {
+            if (tag) return tag
+            return TextProcessor.convert(TextProcessor.convertFromMixed(text), targetScript)
+          })
+    })
+  }
+
+  function applyReader(next: Record<string, any>) {
+    const script = readerScript(next)
+    const patched = {
+      ...next,
+      paliScript: script,
+      paliColor: '#1a1a1a',
+      transColor: '#2c2c2c',
+      pageSystem: 'none',
+    }
+    applySettings(patched)
+    document.body.setAttribute('data-layout', next.layout || 'stacked')
+    document.body.setAttribute('data-page', 'none')
+    applyPaliScript(script)
+  }
+
+  function save() {
+    const next = { ...settings, scriptManuallySet: true, paliScript: settings.paliScript || Script.MY }
+    saveSettings(next)
+    applyReader(next)
+    setSettings(next)
+    setSettingsOpen(false)
+  }
+
+  function dismissBanner() {
+    try { localStorage.setItem(BANNER_KEY, '1') } catch { /* ignore */ }
+    setBanner(false)
+  }
+
+  function toggleBookmark() {
+    const id = bookmarkId(bookId, activePara)
+    const all = loadBookmarks()
+    const next = all.includes(id) ? all.filter(x => x !== id) : [...all, id]
+    try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)) } catch { /* ignore */ }
+    setBookmarked(next.includes(id))
+  }
+
+  return (
+    <Shell
+      baseUrl={BASE_URL}
+      lang={lang}
+      langs={langs}
+      bookId={bookId}
+      title={headerTitle}
+      subtitle="The Chaṭṭha Saṅgāyana Tipiṭaka"
+      toc={toc}
+      activePara={activePara}
+      sidebarMode="toc"
+      bookmarked={bookmarked}
+      showClose
+      showSearch={false}
+      hideFooter
+      onSettings={() => setSettingsOpen(true)}
+      onBookmark={toggleBookmark}
+    >
+      {banner && (
+        <div className={styles.banner}>
+          <span>Want to change the translation?</span>
+          <button className={styles.bannerBtn} type="button" onClick={() => setLangOpen(v => !v)}>
+            Go to translations
+          </button>
+          <button className={styles.bannerX} type="button" aria-label="Dismiss" onClick={dismissBanner}>×</button>
+        </div>
+      )}
+      {langOpen && (
+        <div className={styles.langPanel}>
+          {langs.map(l => (
+            <a
+              key={l.code}
+              href={`${BASE_URL}/${l.code}/book/${bookId}`}
+              data-on={String(l.code === lang)}
+            >
+              {l.english_name || l.native_name || l.code}
+            </a>
+          ))}
+        </div>
+      )}
+
+      <div className={styles.folio}>
+        <h1 className={styles.folioTitle}>{book?.book_name || bookId}</h1>
+        <p className={styles.folioMark}>{section?.title || (loading ? 'Loading…' : bookId)}</p>
+      </div>
+      {error && <p className={styles.folioMark}>{error}</p>}
+      <div className={styles.article} ref={host} />
+
+      {settingsOpen && (
+        <div className={styles.modal} role="dialog" aria-modal="true" onClick={() => setSettingsOpen(false)}>
+          <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
+            <h2>Text settings</h2>
+            <label className={styles.field}>
+              Pāli script
+              <select value={settings.paliScript} onChange={e => setSettings({ ...settings, paliScript: e.target.value, scriptManuallySet: true })}>
+                <option value={Script.MY}>Burmese (Myanmar)</option>
+                <option value={Script.RO}>Roman</option>
+                <option value={Script.SI}>Sinhala</option>
+                <option value={Script.HI}>Devanagari</option>
+                <option value={Script.THAI}>Thai</option>
+              </select>
+            </label>
+            <label className={styles.field}>
+              Layout
+              <select value={settings.layout} onChange={e => setSettings({ ...settings, layout: e.target.value })}>
+                <option value="stacked">Stacked</option>
+                <option value="sidebyside">Side by side</option>
+              </select>
+            </label>
+            <label className={styles.field}>
+              Font size ({settings.fontSize}px)
+              <input type="range" min={16} max={32} value={settings.fontSize}
+                onChange={e => setSettings({ ...settings, fontSize: Number(e.target.value) })} />
+            </label>
+            <label className={styles.field}>
+              <span><input type="checkbox" checked={settings.pali} onChange={e => setSettings({ ...settings, pali: e.target.checked })} /> Pāli</span>
+            </label>
+            <label className={styles.field}>
+              <span><input type="checkbox" checked={settings.translation} onChange={e => setSettings({ ...settings, translation: e.target.checked })} /> Translation</span>
+            </label>
+            <div className={styles.actions}>
+              <button className={styles.btn} type="button" onClick={() => setSettings({ ...defaultSettings(), paliScript: Script.MY, scriptManuallySet: true })}>Reset</button>
+              <button className={`${styles.btn} ${styles.btnPrimary}`} type="button" onClick={save}>Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </Shell>
+  )
+}

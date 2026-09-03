@@ -1,0 +1,29 @@
+.card {
+  display: grid;
+  grid-template-columns: 5.2rem 1fr;
+  gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.55rem 0.1rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  text-decoration: none;
+  color: inherit;
+  min-height: 0;
+}
+.card:hover { background: var(--highlight); }
+.id {
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-style: italic;
+}
+.name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+.meta { display: none; }

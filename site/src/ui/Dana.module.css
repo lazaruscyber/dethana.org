@@ -1,0 +1,61 @@
+.page {
+  width: min(40rem, 100%);
+  margin: 0 auto;
+  padding: 1.6rem 1.25rem 3rem;
+}
+.crumb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+}
+.crumb a { color: var(--navy); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--navy);
+}
+.lead {
+  margin: 0.85rem 0 1.4rem;
+  line-height: 1.65;
+  color: #3a4250;
+}
+.heading {
+  margin: 1.8rem 0 0.7rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--navy);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+}
+.table th, .table td {
+  text-align: left;
+  padding: 0.7rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+.table thead th {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.table tfoot th {
+  padding-top: 0.95rem;
+  color: var(--navy);
+  font-size: 1rem;
+}
+.note {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.mail {
+  color: var(--navy);
+  font-weight: 600;
+}

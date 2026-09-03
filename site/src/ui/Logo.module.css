@@ -1,0 +1,37 @@
+.logo {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-logo);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--gold);
+}
+
+.nav {
+  font-size: 1.28rem;
+  letter-spacing: 0.28em;
+  padding: 0 0.05rem 0.28rem 0.12rem;
+}
+
+.hero {
+  font-size: clamp(2.75rem, 7vw, 4.35rem);
+  letter-spacing: 0.32em;
+  padding: 0 0.08rem 0.42rem 0.16rem;
+  color: #161310;
+}
+
+.inverted {
+  color: #fff;
+  border-bottom-color: rgba(255, 255, 255, 0.45);
+}
+.inverted:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+.logo:hover {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}

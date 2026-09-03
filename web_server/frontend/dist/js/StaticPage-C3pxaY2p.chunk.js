@@ -1,0 +1,1 @@
+import{r as n,j as s}from"./tokens-CL0wwBHx.chunk.js";/* empty css                      */function a({sourceId:r}){const t=n.useRef(null);return n.useEffect(()=>{const e=document.getElementById(r);e&&t.current&&e.parentElement!==t.current&&(t.current.appendChild(e),e.hidden=!1)},[r]),s.jsx("div",{ref:t})}export{a as S};
