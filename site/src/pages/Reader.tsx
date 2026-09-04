@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Shell } from '../ui/Shell'
-import { loadSettings, saveSettings, applySettings, defaultSettings } from '../settings.js'
+import { loadSettings, saveSettings, applySettings, defaultSettings, getScriptForLang } from '../settings.js'
 import { TextProcessor, Script } from '../pali-script.js'
 import { fetchBook, fetchSection, slugForHeading } from '../api/menu'
 import { BASE_URL } from '../routes'
@@ -21,9 +21,17 @@ type Props = {
 const BANNER_KEY = 'epitaka_hide_trans_banner'
 const BOOKMARK_KEY = 'epitaka_bookmarks'
 
-function readerScript(settings: Record<string, any>) {
-  if (settings.scriptManuallySet && settings.paliScript) return settings.paliScript
-  return Script.MY
+function readerScript(settings: Record<string, any>, lang = 'en') {
+  if (settings.paliScript) return settings.paliScript
+  return getScriptForLang(lang)
+}
+
+function convertPaliHtml(html: string, targetScript: string) {
+  return html.replace(/(<[^>]+>)|([^<]+)/g, (_m: string, tag: string, text: string) => {
+    if (tag) return tag
+    if (!text) return ''
+    return TextProcessor.convert(TextProcessor.convertFromMixed(text), targetScript)
+  })
 }
 
 function bookmarkId(bookId: string, paraId: number | null) {
@@ -102,21 +110,17 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [book, setBook] = useState<BookFile | null>(null)
-  const [settings, setSettings] = useState(() => {
-    const loaded = loadSettings(lang)
-    if (!loaded.scriptManuallySet) loaded.paliScript = Script.MY
-    return loaded
-  })
+  const [settings, setSettings] = useState(() => loadSettings(lang))
   const [activePara, setActivePara] = useState<number | null>(paraId)
   const [bookmarked, setBookmarked] = useState(false)
-  const scriptRef = useRef(readerScript(settings))
+  const scriptRef = useRef(readerScript(settings, lang))
   const toc: TocItem[] = book?.toc || []
   const section = toc.find(t => t.para_id === activePara)
   const headerTitle = book?.book_name || bookId
 
   useEffect(() => {
-    scriptRef.current = readerScript(settings)
-  }, [settings])
+    scriptRef.current = readerScript(settings, lang)
+  }, [settings, lang])
 
   useEffect(() => {
     try { setBanner(localStorage.getItem(BANNER_KEY) !== '1') } catch { setBanner(true) }
@@ -240,18 +244,13 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
     document.body.setAttribute('script', targetScript)
     document.querySelectorAll('.pali-text, .book-link-badge').forEach(el => {
       if (!original.current.has(el)) original.current.set(el, el.innerHTML)
-      const roman = original.current.get(el) || ''
-      el.innerHTML = targetScript === Script.RO
-        ? roman
-        : roman.replace(/(<[^>]+>)|([^<]+)/g, (_m: string, tag: string, text: string) => {
-            if (tag) return tag
-            return TextProcessor.convert(TextProcessor.convertFromMixed(text), targetScript)
-          })
+      const source = original.current.get(el) || ''
+      el.innerHTML = convertPaliHtml(source, targetScript)
     })
   }
 
   function applyReader(next: Record<string, any>) {
-    const script = readerScript(next)
+    const script = readerScript(next, lang)
     const patched = {
       ...next,
       paliScript: script,
@@ -266,7 +265,7 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
   }
 
   function save() {
-    const next = { ...settings, scriptManuallySet: true, paliScript: settings.paliScript || Script.MY }
+    const next = { ...settings, scriptManuallySet: true, paliScript: settings.paliScript || getScriptForLang(lang) }
     saveSettings(next)
     applyReader(next)
     setSettings(next)
@@ -341,9 +340,14 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
             <SiteLanguageField />
             <label className={styles.field}>
               {t.paliScript}
-              <select value={settings.paliScript} onChange={e => setSettings({ ...settings, paliScript: e.target.value, scriptManuallySet: true })}>
-                <option value={Script.MY}>{t.scriptBurmese}</option>
+              <select value={settings.paliScript} onChange={e => {
+                const paliScript = e.target.value
+                const next = { ...settings, paliScript, scriptManuallySet: true }
+                setSettings(next)
+                applyPaliScript(paliScript)
+              }}>
                 <option value={Script.RO}>{t.scriptRoman}</option>
+                <option value={Script.MY}>{t.scriptBurmese}</option>
                 <option value={Script.SI}>{t.scriptSinhala}</option>
                 <option value={Script.HI}>{t.scriptDevanagari}</option>
                 <option value={Script.THAI}>{t.scriptThai}</option>
@@ -368,7 +372,11 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
               <span><input type="checkbox" checked={settings.translation} onChange={e => setSettings({ ...settings, translation: e.target.checked })} /> {t.showTranslation}</span>
             </label>
             <div className={styles.actions}>
-              <button className={styles.btn} type="button" onClick={() => setSettings({ ...defaultSettings(), paliScript: Script.MY, scriptManuallySet: true })}>{t.reset}</button>
+              <button className={styles.btn} type="button" onClick={() => {
+                const next = { ...defaultSettings(), paliScript: getScriptForLang(lang), scriptManuallySet: false }
+                setSettings(next)
+                applyPaliScript(next.paliScript)
+              }}>{t.reset}</button>
               <button className={`${styles.btn} ${styles.btnPrimary}`} type="button" onClick={save}>{t.save}</button>
             </div>
           </div>

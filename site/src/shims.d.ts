@@ -14,6 +14,7 @@ declare module '*settings.js' {
   export function saveSettings(settings: Record<string, any>): void
   export function applySettings(settings: Record<string, any>): void
   export function defaultSettings(): Record<string, any>
+  export function getScriptForLang(lang?: string): string
 }
 
 declare module '*pali-script.js' {
