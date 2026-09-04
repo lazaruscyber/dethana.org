@@ -19,6 +19,9 @@
   --font-sans: 'Source Sans 3', 'Segoe UI', sans-serif;
   --font-logo: 'Cormorant Garamond', 'Palatino Linotype', Palatino, 'Source Serif 4', serif;
   --font-my: 'Noto Sans Myanmar', 'Myanmar Text', serif;
+  --font-si: 'Noto Serif Sinhala', serif;
+  --font-hi: 'Noto Serif Devanagari', serif;
+  --font-bn: 'Noto Sans Bengali', sans-serif;
   --radius: 2px;
   --header-h: 58px;
   --sidebar-w: 280px;
@@ -33,8 +36,23 @@
 html[data-ui-lang="my"] body {
   font-family: var(--font-my), var(--font-sans), sans-serif;
 }
+html[data-ui-lang="si"] body {
+  font-family: var(--font-si), var(--font-sans), sans-serif;
+}
+html[data-ui-lang="hi"] body {
+  font-family: var(--font-hi), var(--font-sans), sans-serif;
+}
+html[data-ui-lang="bn"] body {
+  font-family: var(--font-bn), var(--font-sans), sans-serif;
+}
 html[data-ui-lang="my"] .pali-text,
-html[data-ui-lang="my"] .folioTitle {
+html[data-ui-lang="my"] .folioTitle,
+html[data-ui-lang="si"] .pali-text,
+html[data-ui-lang="si"] .folioTitle,
+html[data-ui-lang="hi"] .pali-text,
+html[data-ui-lang="hi"] .folioTitle,
+html[data-ui-lang="bn"] .pali-text,
+html[data-ui-lang="bn"] .folioTitle {
   font-family: var(--font-serif);
 }
 

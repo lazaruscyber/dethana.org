@@ -1,15 +1,6 @@
 import { blogPath, postsByDate } from '../blog/posts'
-import { useUi } from '../i18n'
+import { formatUiDate, useUi } from '../i18n'
 import styles from '../ui/Blog.module.css'
-
-function formatDate(iso: string, locale: string) {
-  const [y, m, d] = iso.split('-').map(Number)
-  return new Date(y, m - 1, d).toLocaleDateString(locale === 'my' ? 'my-MM' : 'en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-}
 
 export function BlogIndexPage() {
   const { t, uiLang } = useUi()
@@ -31,7 +22,7 @@ export function BlogIndexPage() {
         {posts.map(post => (
           <li key={post.slug}>
             <a className={styles.row} href={blogPath(post.slug)}>
-              <time className={styles.rowDate} dateTime={post.date}>{formatDate(post.date, uiLang)}</time>
+              <time className={styles.rowDate} dateTime={post.date}>{formatUiDate(post.date, uiLang)}</time>
               <span className={styles.rowBody}>
                 <span className={styles.rowKicker}>{post.kicker}</span>
                 <span className={styles.rowTitle}>{post.title}</span>

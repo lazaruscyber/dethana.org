@@ -1,16 +1,7 @@
 import { BlogBody } from '../blog/BlogBody'
 import { blogPath, postsByDate, type BlogPost } from '../blog/posts'
-import { useUi } from '../i18n'
+import { formatUiDate, useUi } from '../i18n'
 import styles from '../ui/Blog.module.css'
-
-function formatDate(iso: string, locale: string) {
-  const [y, m, d] = iso.split('-').map(Number)
-  return new Date(y, m - 1, d).toLocaleDateString(locale === 'my' ? 'my-MM' : 'en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-}
 
 export function BlogPostPage({ post }: { post: BlogPost }) {
   const { t, uiLang } = useUi()
@@ -27,7 +18,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
       </p>
       <p className={styles.kicker}>{post.kicker}</p>
       <h1 className={styles.articleTitle}>{post.title}</h1>
-      <time className={styles.articleDate} dateTime={post.date}>{formatDate(post.date, uiLang)}</time>
+      <time className={styles.articleDate} dateTime={post.date}>{formatUiDate(post.date, uiLang)}</time>
       <BlogBody blocks={post.body} />
       {others.length > 0 && (
         <aside className={styles.more} aria-labelledby="more-blogs">
@@ -37,7 +28,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
               <li key={item.slug}>
                 <a href={blogPath(item.slug)}>
                   <span>{item.title}</span>
-                  <time dateTime={item.date}>{formatDate(item.date, uiLang)}</time>
+                  <time dateTime={item.date}>{formatUiDate(item.date, uiLang)}</time>
                 </a>
               </li>
             ))}

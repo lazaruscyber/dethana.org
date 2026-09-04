@@ -45,7 +45,7 @@ export function defaultSettings() {
     pali:             true,
     translation:      true,
     layout:           'stacked',   // 'stacked' | 'sidebyside'
-    paliScript:       Script.RO,   // default Roman
+    paliScript:       Script.MY,   // default Burmese (Myanmar) Pāli
     paliColor:        '#1a1a1a',
     transColor:       '#2c2c2c',
     actionButtons:    'line',      // 'line' | 'para' | 'none'
@@ -68,10 +68,9 @@ export function loadSettings(lang) {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     const merged = { ...defaultSettings(), ...saved };
-    // When the user hasn't explicitly chosen a script, derive it from
-    // the translation language so Pāli text matches the reader's language.
-    if (!merged.scriptManuallySet && lang) {
-      merged.paliScript = getScriptForLang(lang);
+    // Default Pāli script is Burmese unless the reader chose another script.
+    if (!merged.scriptManuallySet) {
+      merged.paliScript = Script.MY;
     }
     return merged;
   } catch {

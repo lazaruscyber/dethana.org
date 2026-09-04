@@ -2,18 +2,9 @@ import { useEffect, useState } from 'react'
 import { COLLECTIONS } from '../api/collections'
 import { blogPath, postsByDate } from '../blog/posts'
 import { SearchBox } from '../ui/SearchBox'
-import { useUi } from '../i18n'
+import { formatUiDate, useUi } from '../i18n'
 import type { IndexConfig } from '../types'
 import styles from '../ui/Home.module.css'
-
-function formatDate(iso: string, locale: string) {
-  const [y, m, d] = iso.split('-').map(Number)
-  return new Date(y, m - 1, d).toLocaleDateString(locale === 'my' ? 'my-MM' : 'en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 
 const POPULAR = [
   { label: 'Dhammapada', href: (base: string, lang: string) => `${base}/${lang}/book/Dhp` },
@@ -119,7 +110,7 @@ export function Home({ config }: { config: IndexConfig }) {
                 <span className={styles.featuredKicker}>{featured.kicker}</span>
                 <span className={styles.featuredTitle}>{featured.title}</span>
                 <time className={styles.featuredDate} dateTime={featured.date}>
-                  {formatDate(featured.date, uiLang)}
+                  {formatUiDate(featured.date, uiLang, 'short')}
                 </time>
                 <span className={styles.featuredExcerpt}>{featured.excerpt}</span>
                 <span className={styles.featuredRead}>{t.readArticle}</span>
@@ -130,7 +121,7 @@ export function Home({ config }: { config: IndexConfig }) {
                     <a href={blogPath(post.slug)}>
                       <span className={styles.sideKicker}>{post.kicker}</span>
                       <span className={styles.sideTitle}>{post.title}</span>
-                      <time dateTime={post.date}>{formatDate(post.date, uiLang)}</time>
+                      <time dateTime={post.date}>{formatUiDate(post.date, uiLang, 'short')}</time>
                     </a>
                   </li>
                 ))}
