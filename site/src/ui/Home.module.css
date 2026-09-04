@@ -15,21 +15,10 @@
   position: relative;
   z-index: 2;
 }
-.question {
-  margin: 0 0 0.55rem;
-  font-family: var(--font-serif);
-  font-size: clamp(2.2rem, 5vw, 3.35rem);
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: -0.02em;
-}
-.heroRule {
-  display: block;
-  width: 4.2rem;
-  height: 2px;
-  margin: 0 auto 0.95rem;
-  background: var(--gold);
-  transform-origin: center;
+.brand {
+  margin: 0 0 1.15rem;
+  display: flex;
+  justify-content: center;
 }
 .tagline {
   width: min(40rem, 100%);

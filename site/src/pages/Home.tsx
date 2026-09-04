@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { COLLECTIONS } from '../api/collections'
 import { blogPath, postsByDate } from '../blog/posts'
 import { SearchBox } from '../ui/SearchBox'
+import { Logo } from '../ui/Logo'
 import { easeOut, fadeUp, springSnappy, stagger, viewOnce } from '../ui/motion'
 import { formatUiDate, useUi } from '../i18n'
 import type { IndexConfig } from '../types'
@@ -41,14 +42,9 @@ export function Home({ config }: { config: IndexConfig }) {
           initial="hidden"
           animate="show"
         >
-          <motion.h1 className={styles.question} variants={fadeUp}>Dethana.org</motion.h1>
-          <motion.span
-            className={styles.heroRule}
-            aria-hidden
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            transition={{ delay: 0.35, duration: 0.7, ease: easeOut }}
-          />
+          <motion.h1 className={styles.brand} variants={fadeUp}>
+            <Logo href={`${config.baseUrl}/${config.lang}/`} size="hero" inverted />
+          </motion.h1>
           <motion.p className={styles.tagline} variants={fadeUp}>
             “Go forth, O bhikkhus, for the good of the many… Teach, O bhikkhus, the Dhamma that is good in the beginning, good in the middle, and good in the end…”
           </motion.p>
