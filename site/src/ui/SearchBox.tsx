@@ -31,6 +31,7 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder, initialQue
   const [titleHits, setTitleHits] = useState<HeadingHit[]>([])
   const [textHits, setTextHits] = useState<FtsLine[]>([])
   const [open, setOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const box = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
@@ -64,7 +65,10 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder, initialQue
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
-      if (!box.current?.contains(e.target as Node)) setOpen(false)
+      if (!box.current?.contains(e.target as Node)) {
+        setOpen(false)
+        setFiltersOpen(false)
+      }
     }
     document.addEventListener('mousedown', onDoc)
     return () => document.removeEventListener('mousedown', onDoc)
@@ -73,7 +77,15 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder, initialQue
   function applyMode(next: SearchMode) {
     setMode(next)
     storeSearchMode(next)
-    setOpen(true)
+    setFiltersOpen(false)
+    if (q.trim().length >= 2) setOpen(true)
+  }
+
+  function toggleFilters(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setFiltersOpen(v => !v)
+    setOpen(false)
   }
 
   function goSearch(e: React.FormEvent) {
@@ -84,7 +96,7 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder, initialQue
     window.location.href = searchPageHref(baseUrl, lang, query, mode)
   }
 
-  const showPanel = open && q.trim().length >= 2
+  const showPanel = open && q.trim().length >= 2 && !filtersOpen
   const label = mode === 'text' ? t.searchPlaceholderText : t.searchPlaceholderTitles
   const empty = mode === 'text' ? t.searchNoText : t.searchNoTitles
   const resultsHref = searchPageHref(baseUrl, lang, q.trim(), mode)
@@ -97,43 +109,62 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder, initialQue
       role="search"
     >
       <div className={styles.field}>
-        <span className={styles.icon} aria-hidden>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <button
+          className={styles.icon}
+          type="button"
+          aria-label={`${t.search}: ${mode === 'text' ? t.searchModeText : t.searchModeTitles}`}
+          aria-expanded={filtersOpen}
+          aria-haspopup="listbox"
+          onClick={toggleFilters}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <circle cx="8" cy="8" r="5.25" stroke="currentColor" strokeWidth="1.6" />
             <path d="M12.2 12.2L16 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
-        </span>
+        </button>
         <input
           className={styles.input}
           value={q}
-          onChange={e => { setQ(e.target.value); setOpen(true) }}
-          onFocus={() => setOpen(true)}
+          onChange={e => { setQ(e.target.value); setFiltersOpen(false); setOpen(true) }}
+          onFocus={() => { setFiltersOpen(false); setOpen(true) }}
           placeholder={placeholder || label}
           aria-label={t.searchTipitaka}
         />
-        {size === 'nav' && (
-          <div className={styles.modes} role="group" aria-label={t.search}>
-            <button type="button" data-on={String(mode === 'titles')} onClick={() => applyMode('titles')}>
-              {t.searchModeTitles}
-            </button>
-            <button type="button" data-on={String(mode === 'text')} onClick={() => applyMode('text')}>
-              {t.searchModeText}
-            </button>
-          </div>
-        )}
       </div>
-      {size !== 'nav' && (
-        <div className={styles.pills} role="group" aria-label={t.search}>
-          <button type="button" data-on={String(mode === 'titles')} onClick={() => applyMode('titles')}>
-            <span>{t.searchModeTitles}</span>
-            <small>{t.searchModeTitlesHint}</small>
-          </button>
-          <button type="button" data-on={String(mode === 'text')} onClick={() => applyMode('text')}>
-            <span>{t.searchModeText}</span>
-            <small>{t.searchModeTextHint}</small>
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {filtersOpen && (
+          <motion.div
+            className={styles.filterMenu}
+            role="listbox"
+            aria-label={t.search}
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <button
+              type="button"
+              role="option"
+              aria-selected={mode === 'titles'}
+              data-on={String(mode === 'titles')}
+              onClick={() => applyMode('titles')}
+            >
+              <span>{t.searchModeTitles}</span>
+              <small>{t.searchModeTitlesHint}</small>
+            </button>
+            <button
+              type="button"
+              role="option"
+              aria-selected={mode === 'text'}
+              data-on={String(mode === 'text')}
+              onClick={() => applyMode('text')}
+            >
+              <span>{t.searchModeText}</span>
+              <small>{t.searchModeTextHint}</small>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {showPanel && (
           <motion.div
