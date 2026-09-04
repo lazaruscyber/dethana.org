@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
 import { SiteLanguageField } from './SiteLanguageField'
@@ -6,6 +7,7 @@ import { fetchMenu } from '../api/menu'
 import { applyTheme } from './theme'
 import { initCookieConsent } from '../cookie-consent.js'
 import { useUi } from '../i18n'
+import { ModalLayer } from './motion'
 import type { LangInfo, MenuTree, TocItem } from '../types'
 import styles from './Shell.module.css'
 
@@ -74,46 +76,64 @@ export function Shell({
           bookId={bookId}
           activePara={activePara}
         />
-        {navOpen && <button className={styles.backdrop} aria-label={t.close} onClick={() => setNavOpen(false)} />}
+        <AnimatePresence>
+          {navOpen && (
+            <motion.button
+              className={styles.backdrop}
+              aria-label={t.close}
+              onClick={() => setNavOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            />
+          )}
+        </AnimatePresence>
         <main id="main-content" className={styles.main}>
           {children}
           {!hideFooter && (
-            <div className={styles.footer}>
-              <a href={`${baseUrl}/blog`}>{t.blogs}</a>
-              <a href={`${baseUrl}/about`}>{t.about}</a>
-              <a href={`${baseUrl}/translation-policy`}>{t.translationPolicy}</a>
-              <a href={`${baseUrl}/dana`}>{t.dana}</a>
-              <a href={`${baseUrl}/privacy`}>{t.privacy}</a>
+            <motion.div
+              className={styles.footer}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {[
+                [`${baseUrl}/blog`, t.blogs],
+                [`${baseUrl}/about`, t.about],
+                [`${baseUrl}/translation-policy`, t.translationPolicy],
+                [`${baseUrl}/dana`, t.dana],
+                [`${baseUrl}/privacy`, t.privacy],
+              ].map(([href, label]) => (
+                <a key={href} href={href}>{label}</a>
+              ))}
               <span>Dethana</span>
-            </div>
+            </motion.div>
           )}
         </main>
       </div>
-      {panel && (
-        <div className={styles.modal} role="dialog" aria-modal="true" onClick={() => setPanel(false)}>
-          <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
-            <h2>{t.textSettings}</h2>
-            <SiteLanguageField />
-            {langs.length > 0 && (
-              <div className={styles.field}>
-                {t.scriptureTranslation}
-                <div className={styles.langs}>
-                  {langs.map(l => (
-                    <a
-                      key={l.code}
-                      href={bookId ? `${baseUrl}/${l.code}/book/${bookId}` : `${baseUrl}/${l.code}/`}
-                      data-on={String(l.code === lang)}
-                    >
-                      {l.english_name || l.code}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-            <button className={styles.close} type="button" onClick={() => setPanel(false)}>{t.close}</button>
+      <ModalLayer open={panel} onClose={() => setPanel(false)} className={styles.modal} boxClassName={styles.modalBox}>
+        <h2>{t.textSettings}</h2>
+        <SiteLanguageField />
+        {langs.length > 0 && (
+          <div className={styles.field}>
+            {t.scriptureTranslation}
+            <div className={styles.langs}>
+              {langs.map(l => (
+                <a
+                  key={l.code}
+                  href={bookId ? `${baseUrl}/${l.code}/book/${bookId}` : `${baseUrl}/${l.code}/`}
+                  data-on={String(l.code === lang)}
+                >
+                  {l.english_name || l.code}
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+        <button className={styles.close} type="button" onClick={() => setPanel(false)}>{t.close}</button>
+      </ModalLayer>
     </div>
   )
 }

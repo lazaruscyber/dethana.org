@@ -16,6 +16,7 @@ import { postBySlug } from './blog/posts'
 import { BASE_URL, DEFAULT_LANG, parseRoute } from './routes'
 import { applySeo, DEFAULT_DESCRIPTION, DEFAULT_TITLE } from './seo'
 import { useUi } from './i18n'
+import { PageEnter } from './ui/motion'
 import { initCookieConsent } from './cookie-consent.js'
 import type { LangInfo } from './types'
 import './ui/tokens.css'
@@ -163,13 +164,14 @@ export function App() {
 
   if (route.name === 'search') {
     return (
-      <Shell baseUrl={BASE_URL} lang={route.lang} langs={available}>
+      <Shell baseUrl={BASE_URL} lang={route.lang} langs={available} fullBleed>
         <SearchPage config={{
           page: 'search',
           baseUrl: BASE_URL,
           lang: route.lang,
           availableLangs: available,
           query: route.query,
+          mode: route.mode,
         }} />
       </Shell>
     )
@@ -247,10 +249,10 @@ export function App() {
 
   return (
     <Shell baseUrl={BASE_URL} lang={DEFAULT_LANG} langs={available}>
-      <div>
+      <PageEnter>
         <h1>{t.pageNotFound}</h1>
         <p><a href={`${BASE_URL}/${DEFAULT_LANG}/`}>{t.backToDethana}</a></p>
-      </div>
+      </PageEnter>
     </Shell>
   )
 }

@@ -8,13 +8,7 @@
   background: var(--surface);
   border-right: 1px solid var(--border);
   overflow: auto;
-  transform: translateX(-105%);
-  transition: transform 0.18s ease;
   box-shadow: none;
-}
-.aside.open {
-  transform: none;
-  box-shadow: 8px 0 28px rgba(40, 32, 18, 0.08);
 }
 
 .group { padding: 0.5rem 0.7rem 1.2rem; }

@@ -77,6 +77,6 @@
   .left { gap: 0.2rem; }
 }
 
-@media (min-width: 900px) {
-  .searchWrap { display: block; width: 13.5rem; margin-right: 0.25rem; }
+@media (min-width: 860px) {
+  .searchWrap { display: block; width: min(24rem, 36vw); margin-right: 0.35rem; }
 }

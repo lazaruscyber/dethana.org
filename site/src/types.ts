@@ -100,6 +100,7 @@ export type PageConfig = {
   lang: string
   availableLangs: LangInfo[]
   query?: string
+  mode?: 'titles' | 'text'
   collection?: string
 }
 
@@ -115,7 +116,7 @@ export type BookEntry = {
 export type AppRoute =
   | { name: 'home'; lang: string }
   | { name: 'book'; lang: string; bookId: string; slug?: string; paraId: number | null }
-  | { name: 'search'; lang: string; query: string }
+  | { name: 'search'; lang: string; query: string; mode: 'titles' | 'text' }
   | { name: 'collection'; lang: string; collection: string }
   | { name: 'about' }
   | { name: 'translation-policy' }

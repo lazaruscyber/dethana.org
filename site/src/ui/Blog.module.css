@@ -55,7 +55,10 @@
   padding: 1.35rem 0 1.5rem;
   text-decoration: none;
   color: inherit;
+  transition: transform 0.2s ease;
 }
+.row:hover { transform: translateX(6px); }
+.row:hover .rowTitle { text-decoration: underline; }
 .rowDate {
   font-size: 0.82rem;
   color: var(--muted);
@@ -86,7 +89,6 @@
   line-height: 1.5;
   color: #3a4250;
 }
-.row:hover .rowTitle { text-decoration: underline; }
 
 .articleTitle {
   margin: 0;

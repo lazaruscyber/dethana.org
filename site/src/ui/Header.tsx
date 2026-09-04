@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion'
 import { SearchBox } from './SearchBox'
 import { Logo } from './Logo'
+import { springSnappy } from './motion'
 import { useUi } from '../i18n'
 import type { LangInfo } from '../types'
 import styles from './Header.module.css'
@@ -26,9 +28,24 @@ export function Header({
   const { t } = useUi()
   const home = `${baseUrl}/${lang}/`
   return (
-    <header className={styles.header}>
+    <motion.header
+      className={styles.header}
+      initial={{ y: -28, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className={styles.left}>
-        <button className={styles.icon} type="button" aria-label={t.contents} onClick={onMenu}>☰</button>
+        <motion.button
+          className={styles.icon}
+          type="button"
+          aria-label={t.contents}
+          onClick={onMenu}
+          whileHover={{ scale: 1.12 }}
+          whileTap={{ scale: 0.9 }}
+          transition={springSnappy}
+        >
+          ☰
+        </motion.button>
         <Logo href={home} inverted />
       </div>
       <div className={styles.center}>
@@ -48,11 +65,14 @@ export function Header({
           </div>
         )}
         {onBookmark && (
-          <button
+          <motion.button
             className={`${styles.icon} ${bookmarked ? styles.on : ''}`}
             type="button"
             aria-label={bookmarked ? t.removeBookmark : t.bookmark}
             onClick={onBookmark}
+            whileHover={{ scale: 1.12, y: -1 }}
+            whileTap={{ scale: 0.88 }}
+            transition={springSnappy}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path
@@ -62,10 +82,20 @@ export function Header({
                 strokeWidth="1.4"
               />
             </svg>
-          </button>
+          </motion.button>
         )}
-        <button className={styles.iconA} type="button" aria-label={t.textSettings} onClick={onSettings}>A</button>
+        <motion.button
+          className={styles.iconA}
+          type="button"
+          aria-label={t.textSettings}
+          onClick={onSettings}
+          whileHover={{ scale: 1.12 }}
+          whileTap={{ scale: 0.9 }}
+          transition={springSnappy}
+        >
+          A
+        </motion.button>
       </div>
-    </header>
+    </motion.header>
   )
 }

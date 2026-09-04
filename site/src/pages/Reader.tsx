@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Shell } from '../ui/Shell'
 import { loadSettings, saveSettings, applySettings, defaultSettings } from '../settings.js'
 import { TextProcessor, Script } from '../pali-script.js'
@@ -8,6 +9,7 @@ import { applySeo, SITE_ORIGIN } from '../seo'
 import { interpolate, useUi } from '../i18n'
 import { SiteLanguageField } from '../ui/SiteLanguageField'
 import { bindPaliTooltips, wrapPaliWords } from '../pali-gloss'
+import { fadeUp, ModalLayer, springSnappy } from '../ui/motion'
 import type { BookFile, LangInfo, SectionData, TocItem } from '../types'
 import styles from '../ui/Reader.module.css'
 import '../ui/content.css'
@@ -329,39 +331,70 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
       onBookmark={toggleBookmark}
     >
       {banner && (
-        <div className={styles.banner}>
+        <motion.div
+          className={styles.banner}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
           <span>{t.changeTranslation}</span>
-          <button className={styles.bannerBtn} type="button" onClick={() => setScriptOpen(v => !v)}>
+          <motion.button
+            className={styles.bannerBtn}
+            type="button"
+            onClick={() => setScriptOpen(v => !v)}
+            whileHover={{ y: -1, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={springSnappy}
+          >
             {paliScriptOptions(t).find(opt => opt.id === readerScript(settings))?.label || t.goToTranslations}
-          </button>
+          </motion.button>
           <button className={styles.bannerX} type="button" aria-label={t.dismiss} onClick={dismissBanner}>×</button>
-        </div>
+        </motion.div>
       )}
-      {banner && scriptOpen && (
-        <div className={styles.langPanel} role="listbox" aria-label={t.paliScript}>
-          {paliScriptOptions(t).map(opt => (
-            <button
-              key={opt.id}
-              type="button"
-              data-on={String(readerScript(settings) === opt.id)}
-              onClick={() => setPaliScript(opt.id)}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {banner && scriptOpen && (
+          <motion.div
+            className={styles.langPanel}
+            role="listbox"
+            aria-label={t.paliScript}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {paliScriptOptions(t).map(opt => (
+              <button
+                key={opt.id}
+                type="button"
+                data-on={String(readerScript(settings) === opt.id)}
+                onClick={() => setPaliScript(opt.id)}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className={styles.folio}>
+      <motion.div
+        className={styles.folio}
+        key={`${bookId}-${section?.title || ''}`}
+        initial="hidden"
+        animate="show"
+        variants={fadeUp}
+      >
         <h1 className={styles.folioTitle}>{book?.book_name || bookId}</h1>
         <p className={styles.folioMark}>{section?.title || (loading ? t.loading : bookId)}</p>
-      </div>
+      </motion.div>
       {error && <p className={styles.folioMark}>{error}</p>}
       <div className={styles.article} ref={host} />
 
-      {settingsOpen && (
-        <div className={styles.modal} role="dialog" aria-modal="true" onClick={() => setSettingsOpen(false)}>
-          <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
+      <ModalLayer
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        className={styles.modal}
+        boxClassName={styles.modalBox}
+      >
             <h2>{t.textSettings}</h2>
             <SiteLanguageField />
             <label className={styles.field}>
@@ -403,9 +436,7 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
               }}>{t.reset}</button>
               <button className={`${styles.btn} ${styles.btnPrimary}`} type="button" onClick={save}>{t.save}</button>
             </div>
-          </div>
-        </div>
-      )}
+      </ModalLayer>
     </Shell>
   )
 }

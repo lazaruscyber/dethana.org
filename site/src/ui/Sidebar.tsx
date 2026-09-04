@@ -1,6 +1,8 @@
+import { motion } from 'framer-motion'
 import type { MenuTree, TocItem } from '../types'
 import { slugForHeading } from '../api/menu'
 import { useUi } from '../i18n'
+import { springSoft } from './motion'
 import styles from './Sidebar.module.css'
 
 type Props = {
@@ -17,7 +19,13 @@ type Props = {
 export function Sidebar({ mode, menu, lang, baseUrl, open, toc, bookId, activePara }: Props) {
   const { t } = useUi()
   return (
-    <aside className={`${styles.aside} ${open ? styles.open : ''}`} aria-label={mode === 'toc' ? t.contents : t.library}>
+    <motion.aside
+      className={styles.aside}
+      aria-label={mode === 'toc' ? t.contents : t.library}
+      initial={false}
+      animate={open ? { x: 0, boxShadow: '8px 0 28px rgba(40, 32, 18, 0.12)' } : { x: '-105%', boxShadow: '0 0 0 rgba(0,0,0,0)' }}
+      transition={springSoft}
+    >
       {mode === 'toc' && toc && bookId ? (
         <nav className={styles.group}>
           <div className={styles.label}>{t.contents}</div>
@@ -53,6 +61,6 @@ export function Sidebar({ mode, menu, lang, baseUrl, open, toc, bookId, activePa
           ))}
         </nav>
       )}
-    </aside>
+    </motion.aside>
   )
 }

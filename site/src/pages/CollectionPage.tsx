@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchMenu, flattenMenu } from '../api/menu'
 import { collectionById, bookInCollection, type CollectionId } from '../api/collections'
 import { BookCard } from '../ui/BookCard'
+import { PageEnter } from '../ui/motion'
 import { interpolate, useUi } from '../i18n'
 import type { BookEntry, PageConfig } from '../types'
 import styles from '../ui/Collection.module.css'
@@ -68,10 +69,10 @@ export function CollectionPage({ config }: { config: PageConfig }) {
 
   if (!meta) {
     return (
-      <div className={styles.page}>
+      <PageEnter className={styles.page}>
         <h1>{t.collectionNotFound}</h1>
         <p><a href={`${config.baseUrl}/${config.lang}/`}>{t.backToDethana}</a></p>
-      </div>
+      </PageEnter>
     )
   }
 
@@ -91,7 +92,7 @@ export function CollectionPage({ config }: { config: PageConfig }) {
   const uiDesc = descs[meta.id] || meta.description
 
   return (
-    <div className={styles.page}>
+    <PageEnter className={styles.page}>
       <p className={styles.crumb}>
         <a href={`${config.baseUrl}/${config.lang}/`}>{t.home}</a>
         <span aria-hidden> / </span>
@@ -116,6 +117,6 @@ export function CollectionPage({ config }: { config: PageConfig }) {
           ))}
         </section>
       ))}
-    </div>
+    </PageEnter>
   )
 }

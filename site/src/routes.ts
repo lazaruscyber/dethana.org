@@ -16,7 +16,9 @@ function paraFromSlug(slug?: string) {
 
 export function parseRoute(pathname = window.location.pathname, search = window.location.search): AppRoute {
   const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean)
-  const q = new URLSearchParams(search).get('q') || ''
+  const params = new URLSearchParams(search)
+  const q = params.get('q') || ''
+  const mode = params.get('mode') === 'text' ? 'text' as const : 'titles' as const
 
   if (parts.length === 0) return { name: 'home', lang: DEFAULT_LANG }
   if (parts[0] === 'about' || parts[0] === 'about-dethana') return { name: 'about' }
@@ -27,11 +29,11 @@ export function parseRoute(pathname = window.location.pathname, search = window.
     if (parts[1]) return { name: 'blog-post', slug: parts[1] }
     return { name: 'blog' }
   }
-  if (parts[0] === 'search') return { name: 'search', lang: DEFAULT_LANG, query: q }
+  if (parts[0] === 'search') return { name: 'search', lang: DEFAULT_LANG, query: q, mode }
 
   const lang = parts[0]
   if (parts.length === 1) return { name: 'home', lang }
-  if (parts[1] === 'search') return { name: 'search', lang, query: q }
+  if (parts[1] === 'search') return { name: 'search', lang, query: q, mode }
   if (parts[1] === 'collection' && parts[2]) {
     return { name: 'collection', lang, collection: parts[2] }
   }

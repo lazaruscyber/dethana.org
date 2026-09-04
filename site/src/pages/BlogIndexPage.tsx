@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion'
 import { blogPath, postsByDate } from '../blog/posts'
 import { formatUiDate, useUi } from '../i18n'
+import { PageEnter } from '../ui/motion'
 import styles from '../ui/Blog.module.css'
 
 export function BlogIndexPage() {
@@ -7,7 +9,7 @@ export function BlogIndexPage() {
   const posts = postsByDate()
 
   return (
-    <div className={styles.index}>
+    <PageEnter className={styles.index}>
       <p className={styles.crumb}>
         <a href="/en/">{t.home}</a>
         <span aria-hidden> / </span>
@@ -19,8 +21,13 @@ export function BlogIndexPage() {
         <p className={styles.indexLead}>{t.blogsLead}</p>
       </header>
       <ol className={styles.list}>
-        {posts.map(post => (
-          <li key={post.slug}>
+        {posts.map((post, i) => (
+          <motion.li
+            key={post.slug}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 + i * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
             <a className={styles.row} href={blogPath(post.slug)}>
               <time className={styles.rowDate} dateTime={post.date}>{formatUiDate(post.date, uiLang)}</time>
               <span className={styles.rowBody}>
@@ -29,9 +36,9 @@ export function BlogIndexPage() {
                 <span className={styles.rowExcerpt}>{post.excerpt}</span>
               </span>
             </a>
-          </li>
+          </motion.li>
         ))}
       </ol>
-    </div>
+    </PageEnter>
   )
 }

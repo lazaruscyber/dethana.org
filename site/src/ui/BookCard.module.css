@@ -11,8 +11,16 @@
   text-decoration: none;
   color: inherit;
   min-height: 0;
+  transition: background 0.16s ease, transform 0.2s ease;
 }
-.card:hover { background: var(--highlight); }
+.card:hover {
+  background: var(--highlight);
+  transform: translateX(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: background 0.16s ease; }
+  .card:hover { transform: none; }
+}
 .id {
   font-size: 0.78rem;
   font-weight: 400;

@@ -1,10 +1,12 @@
+import { motion } from 'framer-motion'
 import { useUi } from '../i18n'
+import { fadeUp, PageEnter, stagger } from '../ui/motion'
 import styles from '../ui/Dana.module.css'
 
 export function TranslationPolicyPage() {
   const { t } = useUi()
   return (
-    <div className={styles.page}>
+    <PageEnter className={styles.page}>
       <p className={styles.crumb}>
         <a href="/en/">{t.home}</a>
         <span aria-hidden> / </span>
@@ -12,16 +14,18 @@ export function TranslationPolicyPage() {
         <span aria-hidden> / </span>
         <span>{t.translationPolicy}</span>
       </p>
-      <h1 className={styles.title}>{t.policyH1}</h1>
-      <p className={styles.lead}>{t.policyP1}</p>
-      <p className={styles.lead}>{t.policyP2}</p>
-      <h2 className={styles.heading}>{t.policyHowH}</h2>
-      <p className={styles.lead}>{t.policyP3}</p>
-      <h2 className={styles.heading}>{t.policyNotH}</h2>
-      <p className={styles.lead}>{t.policyP4}</p>
-      <p className={styles.lead}>
-        <a href="/about">{t.aboutDethanaLink}</a>
-      </p>
-    </div>
+      <motion.div variants={stagger(0.08, 0.05)} initial="hidden" animate="show">
+        <motion.h1 className={styles.title} variants={fadeUp}>{t.policyH1}</motion.h1>
+        <motion.p className={styles.lead} variants={fadeUp}>{t.policyP1}</motion.p>
+        <motion.p className={styles.lead} variants={fadeUp}>{t.policyP2}</motion.p>
+        <motion.h2 className={styles.heading} variants={fadeUp}>{t.policyHowH}</motion.h2>
+        <motion.p className={styles.lead} variants={fadeUp}>{t.policyP3}</motion.p>
+        <motion.h2 className={styles.heading} variants={fadeUp}>{t.policyNotH}</motion.h2>
+        <motion.p className={styles.lead} variants={fadeUp}>{t.policyP4}</motion.p>
+        <motion.p className={styles.lead} variants={fadeUp}>
+          <a href="/about">{t.aboutDethanaLink}</a>
+        </motion.p>
+      </motion.div>
+    </PageEnter>
   )
 }
