@@ -94,13 +94,41 @@
   font-weight: 400;
 }
 
-#book-article .pali-text {
-  font-family: var(--font-my);
-  font-size: 1.28em;
+#book-article .pali-word {
+  cursor: help;
+  border-bottom: 1px dotted rgba(14, 42, 71, 0.35);
+}
+#book-article .pali-word:hover,
+#book-article .pali-word:focus {
+  background: var(--highlight);
+  outline: none;
+}
+
+.pali-tip {
+  position: fixed;
+  z-index: 80;
+  max-width: min(18rem, calc(100vw - 1.5rem));
+  background: var(--navy);
+  color: #fff;
+  padding: 0.55rem 0.7rem 0.65rem;
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(8, 24, 40, 0.22);
+  pointer-events: none;
+}
+.pali-tip-word {
+  margin: 0 0 0.28rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--pali-color);
-  line-height: 1.55;
-  overflow-wrap: break-word;
+  font-style: italic;
+}
+.pali-tip-mean {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.88);
 }
 body[script="ro"] #book-article .pali-text {
   font-family: var(--font-serif);

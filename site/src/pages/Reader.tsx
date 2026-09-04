@@ -7,6 +7,7 @@ import { BASE_URL } from '../routes'
 import { applySeo, SITE_ORIGIN } from '../seo'
 import { interpolate, useUi } from '../i18n'
 import { SiteLanguageField } from '../ui/SiteLanguageField'
+import { bindPaliTooltips, wrapPaliWords } from '../pali-gloss'
 import type { BookFile, LangInfo, SectionData, TocItem } from '../types'
 import styles from '../ui/Reader.module.css'
 import '../ui/content.css'
@@ -18,7 +19,7 @@ type Props = {
   langs: LangInfo[]
 }
 
-const BANNER_KEY = 'epitaka_hide_trans_banner'
+const BANNER_KEY = 'dethana_hide_script_banner'
 const BOOKMARK_KEY = 'epitaka_bookmarks'
 
 function readerScript(settings: Record<string, any>) {
@@ -26,11 +27,21 @@ function readerScript(settings: Record<string, any>) {
   return Script.MY
 }
 
+function paliScriptOptions(t: { scriptBurmese: string; scriptRoman: string; scriptSinhala: string; scriptDevanagari: string; scriptThai: string }) {
+  return [
+    { id: Script.MY, label: t.scriptBurmese },
+    { id: Script.RO, label: t.scriptRoman },
+    { id: Script.SI, label: t.scriptSinhala },
+    { id: Script.HI, label: t.scriptDevanagari },
+    { id: Script.THAI, label: t.scriptThai },
+  ]
+}
+
 function convertPaliHtml(html: string, targetScript: string) {
   return html.replace(/(<[^>]+>)|([^<]+)/g, (_m: string, tag: string, text: string) => {
     if (tag) return tag
     if (!text) return ''
-    return TextProcessor.convert(TextProcessor.convertFromMixed(text), targetScript)
+    return wrapPaliWords(TextProcessor.convert(TextProcessor.convertFromMixed(text), targetScript))
   })
 }
 
@@ -105,7 +116,7 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
   const original = useRef(new WeakMap<Element, string>())
   const bookRef = useRef<BookFile | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [langOpen, setLangOpen] = useState(false)
+  const [scriptOpen, setScriptOpen] = useState(false)
   const [banner, setBanner] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -171,6 +182,12 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
       })
     return () => { cancelled = true }
   }, [bookId, t.bookMissing])
+
+  useEffect(() => {
+    const root = host.current
+    if (!root) return
+    return bindPaliTooltips(root, t.paliGlossMissing)
+  }, [t.paliGlossMissing])
 
   useEffect(() => {
     const root = host.current
@@ -272,9 +289,17 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
     setSettingsOpen(false)
   }
 
+  function setPaliScript(paliScript: string) {
+    const next = { ...settings, paliScript, scriptManuallySet: true }
+    setSettings(next)
+    saveSettings(next)
+    applyReader(next)
+  }
+
   function dismissBanner() {
     try { localStorage.setItem(BANNER_KEY, '1') } catch { /* ignore */ }
     setBanner(false)
+    setScriptOpen(false)
   }
 
   function toggleBookmark() {
@@ -306,22 +331,23 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
       {banner && (
         <div className={styles.banner}>
           <span>{t.changeTranslation}</span>
-          <button className={styles.bannerBtn} type="button" onClick={() => setLangOpen(v => !v)}>
-            {t.goToTranslations}
+          <button className={styles.bannerBtn} type="button" onClick={() => setScriptOpen(v => !v)}>
+            {paliScriptOptions(t).find(opt => opt.id === readerScript(settings))?.label || t.goToTranslations}
           </button>
           <button className={styles.bannerX} type="button" aria-label={t.dismiss} onClick={dismissBanner}>×</button>
         </div>
       )}
-      {langOpen && (
-        <div className={styles.langPanel}>
-          {langs.map(l => (
-            <a
-              key={l.code}
-              href={`${BASE_URL}/${l.code}/book/${bookId}`}
-              data-on={String(l.code === lang)}
+      {banner && scriptOpen && (
+        <div className={styles.langPanel} role="listbox" aria-label={t.paliScript}>
+          {paliScriptOptions(t).map(opt => (
+            <button
+              key={opt.id}
+              type="button"
+              data-on={String(readerScript(settings) === opt.id)}
+              onClick={() => setPaliScript(opt.id)}
             >
-              {l.english_name || l.native_name || l.code}
-            </a>
+              {opt.label}
+            </button>
           ))}
         </div>
       )}
@@ -342,9 +368,7 @@ export function Reader({ lang, bookId, paraId, langs }: Props) {
               {t.paliScript}
               <select value={settings.paliScript} onChange={e => {
                 const paliScript = e.target.value
-                const next = { ...settings, paliScript, scriptManuallySet: true }
-                setSettings(next)
-                applyPaliScript(paliScript)
+                setPaliScript(paliScript)
               }}>
                 <option value={Script.MY}>{t.scriptBurmese}</option>
                 <option value={Script.RO}>{t.scriptRoman}</option>

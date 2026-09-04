@@ -66,14 +66,18 @@
   background: #f4f4f4;
   border-bottom: 1px solid var(--border);
 }
-.langPanel a {
+.langPanel button {
   color: var(--text);
   text-decoration: none;
+  font: inherit;
   font-size: 0.82rem;
   padding: 0.15rem 0.4rem;
+  border: 0;
+  background: none;
+  cursor: pointer;
   border-bottom: 1px solid transparent;
 }
-.langPanel a:hover, .langPanel a[data-on="true"] { border-bottom-color: var(--gold); }
+.langPanel button:hover, .langPanel button[data-on="true"] { border-bottom-color: var(--gold); }
 
 .article { width: 100%; }
 
