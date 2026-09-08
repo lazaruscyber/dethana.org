@@ -8,6 +8,7 @@ import { DanaPage } from './pages/DanaPage'
 import { AboutPage } from './pages/AboutPage'
 import { TranslationPolicyPage } from './pages/TranslationPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
+import { BrandkitPage } from './pages/BrandkitPage'
 import { BlogIndexPage } from './pages/BlogIndexPage'
 import { BlogPostPage } from './pages/BlogPostPage'
 import { fetchLangs } from './api/menu'
@@ -87,6 +88,14 @@ export function App() {
       applySeo({
         title: 'Privacy | Dethana.org',
         description: 'Privacy policy for Dethana.org.',
+        path,
+      })
+      return
+    }
+    if (route.name === 'brandkit') {
+      applySeo({
+        title: 'Brandkit | Dethana.org',
+        description: 'Dethana wordmark, colour palette, typography, and brand assets used on Dethana.org.',
         path,
       })
       return
@@ -208,6 +217,14 @@ export function App() {
     return (
       <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
         <PrivacyPage />
+      </Shell>
+    )
+  }
+
+  if (route.name === 'brandkit') {
+    return (
+      <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
+        <BrandkitPage />
       </Shell>
     )
   }

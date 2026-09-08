@@ -27,6 +27,7 @@ const urls = [
   loc('/translation-policy', 'monthly', '0.4'),
   loc('/privacy', 'yearly', '0.2'),
   loc('/dana', 'monthly', '0.3'),
+  loc('/brandkit', 'monthly', '0.3'),
   loc('/blog', 'weekly', '0.7'),
   loc('/blog/why-dethana', 'monthly', '0.5'),
   loc('/blog/reading-pali-with-a-study-translation', 'monthly', '0.5'),

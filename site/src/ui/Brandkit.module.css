@@ -1,0 +1,210 @@
+.page {
+  width: min(46rem, 100%);
+  margin: 0 auto;
+  padding: 1.6rem 1.25rem 3rem;
+}
+.crumb {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+}
+.crumb a { color: var(--navy); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--navy);
+}
+.lead {
+  margin: 0.85rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+.heading {
+  margin: 2.2rem 0 0.65rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--navy);
+}
+.sectionLead {
+  margin: 0 0 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.logoRow {
+  display: grid;
+  gap: 0.85rem;
+}
+.logoSample {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 1.25rem 1.2rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.logoSampleNavy {
+  background: var(--navy);
+  border-color: var(--navy-mid);
+}
+.logoLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.logoSampleNavy .logoLabel {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+}
+.swatch {
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.2s ease;
+}
+.swatch:hover,
+.swatch:focus-visible {
+  border-color: var(--navy);
+  outline: none;
+}
+.chip {
+  display: block;
+  height: 4.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.meta {
+  padding: 0.65rem 0.7rem 0.75rem;
+}
+.name {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.hex {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.hint {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.typeGrid {
+  display: grid;
+  gap: 0.85rem;
+}
+.typeSample {
+  padding: 1.1rem 1.15rem 1.2rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.typeLabel {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.typeName {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.specimenLogo {
+  margin: 0;
+  font-family: var(--font-logo);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: 0.28em;
+  color: var(--text);
+  border-bottom: 1px solid var(--gold);
+  display: inline-block;
+  padding: 0 0.05rem 0.28rem 0.12rem;
+  line-height: 1;
+}
+.specimenSerif {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1.45;
+  color: var(--navy);
+}
+.specimenSans {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.assets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.85rem;
+}
+.asset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease;
+}
+.asset:hover,
+.asset:focus-visible {
+  border-color: var(--navy);
+  outline: none;
+}
+.assetPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 8.5rem;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.assetPreviewDark {
+  background: var(--navy);
+}
+.assetPreview img {
+  display: block;
+  max-width: 100%;
+  max-height: 8.5rem;
+  object-fit: contain;
+}
+.assetMeta .name { color: var(--navy); }
+.assetMeta .hex { text-transform: none; letter-spacing: 0; }

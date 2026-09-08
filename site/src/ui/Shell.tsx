@@ -105,6 +105,7 @@ export function Shell({
                 [`${baseUrl}/translation-policy`, t.translationPolicy],
                 [`${baseUrl}/dana`, t.dana],
                 [`${baseUrl}/privacy`, t.privacy],
+                [`${baseUrl}/brandkit`, t.brandkit],
               ].map(([href, label]) => (
                 <a key={href} href={href}>{label}</a>
               ))}
