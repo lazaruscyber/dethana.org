@@ -188,6 +188,12 @@ export function SearchBox({ baseUrl, lang, size = 'nav', placeholder, initialQue
                   className={styles.hitTitle}
                   dangerouslySetInnerHTML={{ __html: highlightMatch(h.title, q) }}
                 />
+                {h.translation && (
+                  <span
+                    className={styles.hitSnippet}
+                    dangerouslySetInnerHTML={{ __html: highlightMatch(h.translation, q) }}
+                  />
+                )}
               </a>
             ))}
             {mode === 'text' && textHits.map(h => (

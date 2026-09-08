@@ -115,6 +115,12 @@ export function SearchPage({ config }: { config: PageConfig }) {
                     className={styles.hitTitle}
                     dangerouslySetInnerHTML={{ __html: highlightMatch(item.title, q) }}
                   />
+                  {item.translation && (
+                    <span
+                      className={styles.hitSnippet}
+                      dangerouslySetInnerHTML={{ __html: highlightMatch(item.translation, q) }}
+                    />
+                  )}
                 </a>
               ))}
             </div>
