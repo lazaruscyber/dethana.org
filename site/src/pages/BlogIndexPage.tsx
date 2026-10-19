@@ -11,7 +11,7 @@ export function BlogIndexPage() {
   return (
     <PageEnter className={styles.index}>
       <p className={styles.crumb}>
-        <a href="/en/">{t.home}</a>
+        <a href="/">{t.home}</a>
         <span aria-hidden> / </span>
         <span>{t.blogs}</span>
       </p>

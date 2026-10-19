@@ -31,6 +31,12 @@
   color-scheme: light;
 }
 
+@media (max-width: 919px) {
+  :root {
+    --header-h: 88px;
+  }
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html[data-ui-lang="my"] body {

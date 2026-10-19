@@ -35,7 +35,7 @@ export function BrandkitPage() {
   return (
     <PageEnter className={styles.page}>
       <p className={styles.crumb}>
-        <a href="/en/">{t.home}</a>
+        <a href="/">{t.home}</a>
         <span aria-hidden> / </span>
         <span>{t.brandkit}</span>
       </p>
@@ -48,15 +48,15 @@ export function BrandkitPage() {
         <motion.div className={styles.logoRow} variants={fadeUp}>
           <div className={styles.logoSample}>
             <span className={styles.logoLabel}>{t.brandkitLogoNav}</span>
-            <Logo href="/en/" size="nav" />
+            <Logo href="/" size="nav" />
           </div>
           <div className={styles.logoSample}>
             <span className={styles.logoLabel}>{t.brandkitLogoHero}</span>
-            <Logo href="/en/" size="hero" />
+            <Logo href="/" size="hero" />
           </div>
           <div className={`${styles.logoSample} ${styles.logoSampleNavy}`}>
             <span className={styles.logoLabel}>{t.brandkitLogoOnNavy}</span>
-            <Logo href="/en/" size="nav" inverted />
+            <Logo href="/" size="nav" inverted />
           </div>
         </motion.div>
 

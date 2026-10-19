@@ -100,6 +100,10 @@ export function Shell({
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               {[
+                [`${baseUrl}/`, t.home],
+                [`${baseUrl}/browse`, t.browse],
+                [`${baseUrl}/social-media`, t.socialMedia],
+                [`${baseUrl}/charity`, t.charity],
                 [`${baseUrl}/blog`, t.blogs],
                 [`${baseUrl}/about`, t.about],
                 [`${baseUrl}/translation-policy`, t.translationPolicy],
@@ -107,7 +111,7 @@ export function Shell({
                 [`${baseUrl}/privacy`, t.privacy],
                 [`${baseUrl}/brandkit`, t.brandkit],
               ].map(([href, label]) => (
-                <a key={href} href={href}>{label}</a>
+                <a key={href} href={href === `${baseUrl}/` ? '/' : href}>{label}</a>
               ))}
               <span>Dethana</span>
             </motion.div>
@@ -124,7 +128,7 @@ export function Shell({
               {langs.map(l => (
                 <a
                   key={l.code}
-                  href={bookId ? `${baseUrl}/${l.code}/book/${bookId}` : `${baseUrl}/${l.code}/`}
+                  href={bookId ? `${baseUrl}/${l.code}/book/${bookId}` : `${baseUrl}/browse`}
                   data-on={String(l.code === lang)}
                 >
                   {l.english_name || l.code}

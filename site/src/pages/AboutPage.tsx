@@ -8,7 +8,7 @@ export function AboutPage() {
   return (
     <PageEnter className={styles.page}>
       <p className={styles.crumb}>
-        <a href="/en/">{t.home}</a>
+        <a href="/">{t.home}</a>
         <span aria-hidden> / </span>
         <span>{t.about}</span>
       </p>

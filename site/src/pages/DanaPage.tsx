@@ -8,7 +8,7 @@ const EMAIL = 'dethana.org@gmail.com'
 
 export function DanaPage({ config }: { config: PageConfig }) {
   const { t } = useUi()
-  const home = `${config.baseUrl}/${config.lang}/`
+  const home = '/'
   return (
     <PageEnter className={styles.page}>
       <p className={styles.crumb}>

@@ -20,12 +20,15 @@ export function parseRoute(pathname = window.location.pathname, search = window.
   const q = params.get('q') || ''
   const mode = params.get('mode') === 'text' ? 'text' as const : 'titles' as const
 
-  if (parts.length === 0) return { name: 'home', lang: DEFAULT_LANG }
+  if (parts.length === 0) return { name: 'home' }
+  if (parts[0] === 'browse') return { name: 'browse', lang: DEFAULT_LANG }
   if (parts[0] === 'about' || parts[0] === 'about-dethana') return { name: 'about' }
   if (parts[0] === 'translation-policy' || parts[0] === 'about-translation') return { name: 'translation-policy' }
   if (parts[0] === 'privacy') return { name: 'privacy' }
   if (parts[0] === 'dana') return { name: 'dana' }
   if (parts[0] === 'brandkit') return { name: 'brandkit' }
+  if (parts[0] === 'social-media') return { name: 'social-media' }
+  if (parts[0] === 'charity') return { name: 'charity' }
   if (parts[0] === 'blog' || parts[0] === 'blogs') {
     if (parts[1]) return { name: 'blog-post', slug: parts[1] }
     return { name: 'blog' }
@@ -33,7 +36,7 @@ export function parseRoute(pathname = window.location.pathname, search = window.
   if (parts[0] === 'search') return { name: 'search', lang: DEFAULT_LANG, query: q, mode }
 
   const lang = parts[0]
-  if (parts.length === 1) return { name: 'home', lang }
+  if (parts.length === 1) return { name: 'browse', lang }
   if (parts[1] === 'search') return { name: 'search', lang, query: q, mode }
   if (parts[1] === 'collection' && parts[2]) {
     return { name: 'collection', lang, collection: parts[2] }

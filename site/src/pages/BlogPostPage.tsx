@@ -13,7 +13,7 @@ export function BlogPostPage({ post }: { post: BlogPost }) {
     <PageEnter>
       <article className={styles.article}>
         <p className={styles.crumb}>
-          <a href="/en/">{t.home}</a>
+          <a href="/">{t.home}</a>
           <span aria-hidden> / </span>
           <a href={blogPath()}>{t.blogs}</a>
           <span aria-hidden> / </span>

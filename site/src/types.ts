@@ -95,7 +95,7 @@ export type IndexConfig = {
 }
 
 export type PageConfig = {
-  page: 'about' | 'translation-policy' | 'privacy' | '404' | 'outline' | 'search' | 'collection' | 'dana' | 'brandkit'
+  page: 'about' | 'translation-policy' | 'privacy' | '404' | 'outline' | 'search' | 'collection' | 'dana' | 'brandkit' | 'social-media' | 'charity'
   baseUrl: string
   lang: string
   availableLangs: LangInfo[]
@@ -114,7 +114,8 @@ export type BookEntry = {
 }
 
 export type AppRoute =
-  | { name: 'home'; lang: string }
+  | { name: 'home' }
+  | { name: 'browse'; lang: string }
   | { name: 'book'; lang: string; bookId: string; slug?: string; paraId: number | null }
   | { name: 'search'; lang: string; query: string; mode: 'titles' | 'text' }
   | { name: 'collection'; lang: string; collection: string }
@@ -123,6 +124,8 @@ export type AppRoute =
   | { name: 'privacy' }
   | { name: 'dana' }
   | { name: 'brandkit' }
+  | { name: 'social-media' }
+  | { name: 'charity' }
   | { name: 'blog' }
   | { name: 'blog-post'; slug: string }
   | { name: 'notfound' }
