@@ -1,0 +1,35 @@
+.nav {
+  display: none;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: 0.55rem;
+  min-width: 0;
+}
+
+.link {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.35rem 0.55rem;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: #fff;
+}
+
+.link[data-on='true'] {
+  color: #fff;
+  box-shadow: inset 0 -1px 0 var(--gold);
+}
+
+@media (min-width: 920px) {
+  .nav { display: flex; }
+}
+
+@media (min-width: 1100px) {
+  .link { font-size: 0.88rem; padding: 0.4rem 0.7rem; }
+}

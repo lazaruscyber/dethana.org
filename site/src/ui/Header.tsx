@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { SearchBox } from './SearchBox'
 import { Logo } from './Logo'
+import { PageNav } from './PageNav'
 import { springSnappy } from './motion'
 import { useUi } from '../i18n'
 import type { LangInfo } from '../types'
@@ -21,12 +22,19 @@ type Props = {
   onBookmark?: () => void
 }
 
+function pathNow() {
+  return window.location.pathname.replace(/\/+$/, '') || '/'
+}
+
 export function Header({
   baseUrl, lang, bookId, title, subtitle, bookmarked, showSearch,
   onMenu, onSettings, onBookmark,
 }: Props) {
   const { t } = useUi()
-  const home = `${baseUrl}/${lang}/`
+  const path = pathNow()
+  const langBrowse = `${baseUrl}/${lang}`
+  const browseActive = path === '/browse' || path === langBrowse || path.startsWith(`${langBrowse}/`)
+
   return (
     <motion.header
       className={styles.header}
@@ -46,7 +54,8 @@ export function Header({
         >
           ☰
         </motion.button>
-        <Logo href={home} inverted />
+        <Logo href="/" inverted />
+        <PageNav baseUrl={baseUrl} lang={lang} />
       </div>
       <div className={styles.center}>
         {bookId ? (
@@ -96,6 +105,12 @@ export function Header({
           A
         </motion.button>
       </div>
+      <nav className={styles.mobileNav} aria-label={t.sitePages}>
+        <a href="/" data-on={String(path === '/')}>{t.home}</a>
+        <a href={`${baseUrl}/browse`} data-on={String(browseActive)}>{t.browse}</a>
+        <a href={`${baseUrl}/social-media`} data-on={String(path === '/social-media')}>{t.socialMedia}</a>
+        <a href={`${baseUrl}/charity`} data-on={String(path === '/charity')}>{t.charity}</a>
+      </nav>
     </motion.header>
   )
 }

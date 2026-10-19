@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Shell } from './ui/Shell'
-import { Home } from './pages/Home'
+import { MarketingHomePage } from './pages/MarketingHomePage'
+import { BrowsePage } from './pages/BrowsePage'
 import { Reader } from './pages/Reader'
 import { SearchPage } from './pages/SearchPage'
 import { CollectionPage } from './pages/CollectionPage'
@@ -8,6 +9,9 @@ import { DanaPage } from './pages/DanaPage'
 import { AboutPage } from './pages/AboutPage'
 import { TranslationPolicyPage } from './pages/TranslationPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
+import { BrandkitPage } from './pages/BrandkitPage'
+import { SocialMediaPage } from './pages/SocialMediaPage'
+import { CharityPage } from './pages/CharityPage'
 import { BlogIndexPage } from './pages/BlogIndexPage'
 import { BlogPostPage } from './pages/BlogPostPage'
 import { fetchLangs } from './api/menu'
@@ -38,7 +42,19 @@ export function App() {
     const path = window.location.pathname
     if (route.name === 'book') return
     if (route.name === 'home') {
-      applySeo({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION, path: path === '/' ? '/' : path })
+      applySeo({
+        title: DEFAULT_TITLE,
+        description: DEFAULT_DESCRIPTION,
+        path: '/',
+      })
+      return
+    }
+    if (route.name === 'browse') {
+      applySeo({
+        title: 'Browse the Tipiṭaka | Dethana.org',
+        description: DEFAULT_DESCRIPTION,
+        path: path === `/${route.lang}` || path === `/${route.lang}/` ? `/${route.lang}/` : '/browse',
+      })
       return
     }
     if (route.name === 'collection') {
@@ -91,6 +107,30 @@ export function App() {
       })
       return
     }
+    if (route.name === 'brandkit') {
+      applySeo({
+        title: 'Brandkit | Dethana.org',
+        description: 'Dethana wordmark, colour palette, typography, and brand assets used on Dethana.org.',
+        path,
+      })
+      return
+    }
+    if (route.name === 'social-media') {
+      applySeo({
+        title: 'Social Media | Dethana.org',
+        description: 'Share Dethana.org and help more people find the Tipiṭaka.',
+        path,
+      })
+      return
+    }
+    if (route.name === 'charity') {
+      applySeo({
+        title: 'Charity | Dethana.org',
+        description: 'Dethana offers the Tipiṭaka freely as an act of Dhamma charity for the good of the many.',
+        path,
+      })
+      return
+    }
     if (route.name === 'blog') {
       applySeo({
         title: 'Blogs | Dethana.org',
@@ -136,7 +176,7 @@ export function App() {
       path,
       noindex: true,
     })
-  }, [route.name, 'collection' in route ? route.collection : '', 'query' in route ? route.query : '', 'slug' in route ? route.slug : ''])
+  }, [route.name, 'collection' in route ? route.collection : '', 'query' in route ? route.query : '', 'slug' in route ? route.slug : '', 'lang' in route ? route.lang : ''])
 
   const lang = 'lang' in route ? route.lang : DEFAULT_LANG
   const available = langs.length ? langs : [{
@@ -156,8 +196,16 @@ export function App() {
 
   if (route.name === 'home') {
     return (
+      <Shell baseUrl={BASE_URL} lang={DEFAULT_LANG} langs={available} fullBleed showSearch={false}>
+        <MarketingHomePage />
+      </Shell>
+    )
+  }
+
+  if (route.name === 'browse') {
+    return (
       <Shell baseUrl={BASE_URL} lang={route.lang} langs={available} fullBleed showSearch={false}>
-        <Home config={{ baseUrl: BASE_URL, lang: route.lang, availableLangs: available }} />
+        <BrowsePage config={{ baseUrl: BASE_URL, lang: route.lang, availableLangs: available }} />
       </Shell>
     )
   }
@@ -212,6 +260,30 @@ export function App() {
     )
   }
 
+  if (route.name === 'brandkit') {
+    return (
+      <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
+        <BrandkitPage />
+      </Shell>
+    )
+  }
+
+  if (route.name === 'social-media') {
+    return (
+      <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
+        <SocialMediaPage />
+      </Shell>
+    )
+  }
+
+  if (route.name === 'charity') {
+    return (
+      <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
+        <CharityPage />
+      </Shell>
+    )
+  }
+
   if (route.name === 'about') {
     return (
       <Shell baseUrl={BASE_URL} lang={lang} langs={available}>
@@ -251,7 +323,7 @@ export function App() {
     <Shell baseUrl={BASE_URL} lang={DEFAULT_LANG} langs={available}>
       <PageEnter>
         <h1>{t.pageNotFound}</h1>
-        <p><a href={`${BASE_URL}/${DEFAULT_LANG}/`}>{t.backToDethana}</a></p>
+        <p><a href="/">{t.backToDethana}</a></p>
       </PageEnter>
     </Shell>
   )

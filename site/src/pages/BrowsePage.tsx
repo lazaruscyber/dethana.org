@@ -7,7 +7,7 @@ import { Logo } from '../ui/Logo'
 import { easeOut, fadeUp, springSnappy, stagger, viewOnce } from '../ui/motion'
 import { formatUiDate, useUi } from '../i18n'
 import type { IndexConfig } from '../types'
-import styles from '../ui/Home.module.css'
+import styles from '../ui/Browse.module.css'
 
 const POPULAR = [
   { label: 'Dhammapada', href: (base: string, lang: string) => `${base}/${lang}/book/Dhp` },
@@ -22,7 +22,7 @@ const ICONS = [
   <svg key="comm" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 8h16v18H8z" fill="none" stroke="currentColor" strokeWidth="1.7"/><path d="M12 13h8M12 17h8M12 21h5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>,
 ]
 
-export function Home({ config }: { config: IndexConfig }) {
+export function BrowsePage({ config }: { config: IndexConfig }) {
   const { t, uiLang } = useUi()
   const [disclaimer, setDisclaimer] = useState(false)
   const posts = postsByDate()
@@ -43,7 +43,7 @@ export function Home({ config }: { config: IndexConfig }) {
           animate="show"
         >
           <motion.h1 className={styles.brand} variants={fadeUp}>
-            <Logo href={`${config.baseUrl}/${config.lang}/`} size="hero" inverted />
+            <Logo href="/browse" size="hero" inverted />
           </motion.h1>
           <motion.p className={styles.tagline} variants={fadeUp}>
             “Go forth, O bhikkhus, for the good of the many… Teach, O bhikkhus, the Dhamma that is good in the beginning, good in the middle, and good in the end…”

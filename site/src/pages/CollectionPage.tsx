@@ -94,7 +94,7 @@ export function CollectionPage({ config }: { config: PageConfig }) {
   return (
     <PageEnter className={styles.page}>
       <p className={styles.crumb}>
-        <a href={`${config.baseUrl}/${config.lang}/`}>{t.home}</a>
+        <a href={`${config.baseUrl}/browse`}>{t.browse}</a>
         <span aria-hidden> / </span>
         <span>{uiTitle}</span>
       </p>
